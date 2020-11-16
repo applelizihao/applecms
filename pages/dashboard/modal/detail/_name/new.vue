@@ -1,18 +1,38 @@
 <template>
-  <div>
-    312
-    <v-btn color="success" @click="createCategory">
-      保存
-    </v-btn>
+  <div class="row" no-gutters>
+    <v-col cols="12" sm="8" md="8">
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-text-field
+          v-model="form.title"
+          label="标题"
+          :counter="10"
+          required
+        />
+      </v-form>
+      <markdown :content.sync="form.content" />
+      <seoform class="mt-5" />
+      <operation :save="createArticle" :drafts="createDrafts" />
+    </v-col>
+    <v-col cols="12" sm="4" md="4">
+      <quilleditor />
+    </v-col>
   </div>
 </template>
 <script>
+import Markdown from '../../../../../components/modal/markdown.vue'
+import Seoform from '../../../../../components/modal/seoform.vue'
+import Quilleditor from '../../../../../components/modal/quilleditor.vue'
 export default {
   name: '',
   middleware: 'authenticated',
-  components: {},
+  components: { Markdown, Seoform, Quilleditor },
   data () {
     return {
+      valid: false,
+      form: {
+        content: '#### 这是手册',
+        title: null
+      },
       loading: {
         reg: false
       }
@@ -23,18 +43,20 @@ export default {
   created () {},
   mounted () {},
   methods: {
-    createCategory () {
+    createDrafts () {
+      alert('asd')
+    },
+    createArticle () {
       this.loading.reg = true
       const url = '/api/v1/article/create'
-      const formData = new FormData()
-      formData.append('category_id', 1)
-      formData.append('context', 'vzcx')
-      formData.append('owner', 0)
-      formData.append('title', 'scdadas')
+      const body = {
+        title: this.form.title,
+        content: this.form.content
+      }
       this.$axios
-        .post(url, formData)
+        .post(url, body)
         .then((res) => {
-          this.$toast.success('分类创建成功')
+          this.$toast.success('文章创建成功')
         })
         .finally(() => {
           this.loading.reg = false
@@ -43,9 +65,9 @@ export default {
   },
   head () {
     return {
-      title: '登录',
+      title: '创建文章',
       meta: [
-        { hid: 'description', name: 'description', content: '登录页面' }
+        { hid: 'description', name: 'description', content: '创建文章' }
       ]
     }
   }

@@ -85,11 +85,12 @@ export default {
     loginUser () {
       this.loading.reg = true
       const url = '/api/v1/auth/login'
-      const formData = new FormData()
-      formData.append('username', this.username)
-      formData.append('password', this.password)
+      const body = {
+        username: this.username,
+        password: this.password
+      }
       this.$axios
-        .post(url, formData)
+        .post(url, body)
         .then((res) => {
           this.$store.commit('SET_TOKEN', res.data.token)
           this.$router.push('/dashboard')

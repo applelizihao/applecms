@@ -1,8 +1,11 @@
 <template>
   <div>
-    <v-btn color="success" to="new" append>
-      新增分类
-    </v-btn>
+    <div class="d-flex justify-space-between">
+      <v-btn color="success" to="new" rounded append>
+        新增文章
+      </v-btn>
+    </div>
+
     <pre>
     {{ detailList }}
     </pre>
@@ -31,7 +34,7 @@ export default {
   methods: {
     getDetailList () {
       this.loading.reg = true
-      const url = '/api/v1/article/view'
+      const url = '/api/v1/article/self/articles'
       this.$axios
         .get(url)
         .then((res) => {
@@ -47,9 +50,9 @@ export default {
   },
   head () {
     return {
-      title: '登录',
+      title: '创建文章',
       meta: [
-        { hid: 'description', name: 'description', content: '登录页面' }
+        { hid: 'description', name: 'description', content: '创建文章' }
       ]
     }
   }

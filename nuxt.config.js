@@ -15,7 +15,8 @@ export default {
   },
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
-    '@fortawesome/fontawesome-free/css/all.css'
+    '@fortawesome/fontawesome-free/css/all.css',
+    'mavon-editor/dist/css/index.css'
   ],
   render: {
     resourceHints: false
@@ -24,7 +25,8 @@ export default {
   plugins: [
     { src: '@/plugins/vuetify' },
     { src: '~/plugins/persistedState.js', ssr: false },
-    { src: '~/plugins/axios' }
+    { src: '~/plugins/axios' },
+    { src: '~plugins/vue-markdown.js', ssr: false }
   ],
   loading: {
     color: 'blue',
@@ -51,7 +53,7 @@ export default {
     proxy: true // Can be also an object with default options
   },
   proxy: {
-    '/api/': 'http://34.96.135.41:8080'
+    '/api/': 'http://34.96.135.41:5000/'
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
@@ -78,6 +80,6 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     extractCSS: { allChunks: true },
-    transpile: ['vuetify/lib', 'vee-validate/dist/rules', 'vee-validate/dist']
+    transpile: ['vuetify/lib', 'vee-validate/dist/rules', 'vee-validate/dist', 'vue-markdown/dist']
   }
 }
