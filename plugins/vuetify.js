@@ -12,7 +12,7 @@ Vue.use(Vuetify, {
 
 const opts = {
   timeout: 2000
-} // your options
+}
 
 const vueObj = new Vuetify(opts)
 

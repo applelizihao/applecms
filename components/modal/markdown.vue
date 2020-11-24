@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="markdown">
     <p class="mb-1">
       文本内容
     </p>
@@ -69,4 +69,8 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+#markdown{
+  position: relative;
+  z-index: 0;
+}
 </style>

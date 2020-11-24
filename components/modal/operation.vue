@@ -18,6 +18,7 @@
     <v-btn
       class="ma-2"
       color="success"
+      :loading="loading.save"
       rounded
       dark
       @click="save"
@@ -26,7 +27,7 @@
         dark
         left
       >
-        mdi-checkbox-marked-circle
+        mdi-content-save
       </v-icon>
       保存
     </v-btn>
@@ -43,6 +44,10 @@ export default {
     },
     drafts: {
       type: Function,
+      required: true
+    },
+    loading: {
+      type: Object,
       required: true
     }
   },

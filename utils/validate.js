@@ -17,7 +17,9 @@ localize({
   zh_CN: {
     names: {
       username: '账户名',
-      password: '密码'
+      password: '密码',
+      groupname: '组名',
+      value: '值'
     }
   }
 })

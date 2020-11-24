@@ -1,12 +1,13 @@
 <template>
   <div>
-    321
+    <codeedit />
   </div>
 </template>
 <script>
+import Codeedit from '../components/editor/codeedit.vue'
 export default {
   name: '',
-  components: {},
+  components: { Codeedit },
   data () {
     return {}
   },

@@ -1,40 +1,29 @@
 <template>
-  <div class="row" no-gutters>
-    <v-col cols="12" sm="8" md="8">
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
-          v-model="form.title"
-          label="标题"
-          :counter="10"
-          required
-        />
-      </v-form>
-      <markdown :content.sync="form.content" />
-      <seoform class="mt-5" />
-      <operation :save="createArticle" :drafts="createDrafts" />
-    </v-col>
-    <v-col cols="12" sm="4" md="4">
-      <quilleditor />
-    </v-col>
+  <div>
+    <h4>创建文章</h4>
+    <detailform :data="form" :save="createArticle" :loading="loading" :drafts="createDrafts" />
   </div>
 </template>
 <script>
-import Markdown from '../../../../../components/modal/markdown.vue'
-import Seoform from '../../../../../components/modal/seoform.vue'
-import Quilleditor from '../../../../../components/modal/quilleditor.vue'
+import Detailform from '../../../../../components/modal/detailform.vue'
 export default {
   name: '',
   middleware: 'authenticated',
-  components: { Markdown, Seoform, Quilleditor },
+  components: { Detailform },
   data () {
     return {
-      valid: false,
       form: {
-        content: '#### 这是手册',
-        title: null
+        content: '321321',
+        title: '312312321',
+        category: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+        description: 'cascsa',
+        seo_title: '312312',
+        seo_keywords: '312312',
+        seo_description: 'dsadasdas'
+
       },
       loading: {
-        reg: false
+        save: false
       }
     }
   },
@@ -43,24 +32,35 @@ export default {
   created () {},
   mounted () {},
   methods: {
-    createDrafts () {
-      alert('asd')
-    },
     createArticle () {
-      this.loading.reg = true
+      this.loading.save = true
       const url = '/api/v1/article/create'
       const body = {
         title: this.form.title,
-        content: this.form.content
+        content: this.form.content,
+        description: '312312',
+        seo_title: this.form.seo_title,
+        seo_keywords: this.form.seo_keywords,
+        seo_description: this.form.seo_description,
+        status: 0,
+        is_release: false,
+        can_search: true
       }
       this.$axios
         .post(url, body)
         .then((res) => {
           this.$toast.success('文章创建成功')
+          this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
+        })
+        .catch((error) => {
+          this.$toast.error(error.response.data)
         })
         .finally(() => {
-          this.loading.reg = false
+          this.loading.save = false
         })
+    },
+    createDrafts () {
+      alert('asd')
     }
   },
   head () {

@@ -16,17 +16,26 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
     '@fortawesome/fontawesome-free/css/all.css',
-    'mavon-editor/dist/css/index.css'
+    'mavon-editor/dist/css/index.css',
+    // lib css
+    'codemirror/lib/codemirror.css',
+    // merge css
+    'codemirror/addon/merge/merge.css',
+    // theme css
+    'codemirror/theme/base16-dark.css'
   ],
   render: {
     resourceHints: false
   },
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    { src: '@/plugins/vuetify' },
-    { src: '~/plugins/persistedState.js', ssr: false },
-    { src: '~/plugins/axios' },
-    { src: '~plugins/vue-markdown.js', ssr: false }
+    { src: '@/plugins/vuetify', ssr: false },
+    { src: '@/plugins/persistedState.js', ssr: false },
+    { src: '@/plugins/axios' },
+    { src: '@/plugins/vue-markdown.js', ssr: false },
+    { src: '@/plugins/vueuploadimgs.js', ssr: false },
+    { src: '@/plugins/moment.js', ssr: false },
+    { src: '@/plugins/codemirror.js', ssr: false }
   ],
   loading: {
     color: 'blue',
@@ -53,7 +62,7 @@ export default {
     proxy: true // Can be also an object with default options
   },
   proxy: {
-    '/api/': 'http://34.96.135.41:5000/'
+    '/api/': 'http://34.96.152.79:5000/'
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {

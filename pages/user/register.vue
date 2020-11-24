@@ -38,7 +38,7 @@
                       name="password"
                       prepend-icon="mdi-lock"
                       autocomplete="off"
-                      type="text"
+                      type="password"
                     />
                   </ValidationProvider>
                 </v-form>

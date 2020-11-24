@@ -39,7 +39,7 @@
                       name="password"
                       prepend-icon="mdi-lock"
                       autocomplete="off"
-                      type="text"
+                      type="password"
                     />
                   </ValidationProvider>
                 </v-form>
@@ -96,8 +96,8 @@ export default {
           this.$router.push('/dashboard')
           this.$toast.success('登录成功')
         })
-        .catch((res) => {
-          this.$toast.error(res.response.data)
+        .catch((error) => {
+          this.$toast.error(error.response.data)
         })
         .finally(() => {
           this.loading.reg = false
