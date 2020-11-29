@@ -57,7 +57,7 @@
     <v-main>
       <v-container fluid>
         <div class="app-row-content pa-4">
-          <nuxt />
+          <nuxt-child />
         </div>
       </v-container>
     </v-main>

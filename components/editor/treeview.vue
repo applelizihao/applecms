@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card id="treeview">
     <v-toolbar
       color="primary"
       dark
@@ -8,65 +8,114 @@
       <v-icon>mdi-silverware</v-icon>
       <v-toolbar-title>源码在线编辑</v-toolbar-title>
     </v-toolbar>
-
     <v-row>
       <v-col>
         <v-card-text>
           <v-treeview
-            v-model="tree"
             :items="listFile"
-            activatable
-            item-key="name"
+            item-key="path"
             open-on-click
+            :active.sync="activeFile"
+            activatable
           >
+            <template v-slot:label="{item}">
+              <div class="py-2" @contextmenu.prevent="rightShow(item)">
+                {{ item.name }}
+              </div>
+            </template>
             <template v-slot:prepend="{ item, open }">
-              <v-icon v-if="!item.file">
-                {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
-              </v-icon>
-              <v-icon v-else>
-                {{ files[item.file] }}
-              </v-icon>
+              <div @contextmenu.prevent="rightShow(item)">
+                <v-icon v-if="!item.file">
+                  {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+                </v-icon>
+                <v-icon v-else>
+                  {{ files[item.file] }}
+                </v-icon>
+              </div>
             </template>
           </v-treeview>
         </v-card-text>
       </v-col>
-
       <v-divider vertical />
-      <v-col cols="12" md="8">
-        <codeedit />
+      <v-col cols="12" md="8" :class="{'d-flex justify-center align-center':!fileName}">
+        <template v-if="fileName">
+          <!-- eslint-disable-next-line vue/attribute-hyphenation -->
+          <codeedit :fileContent.sync="fileContent" :fileName="fileName" />
+        </template>
+        <template v-else>
+          <div
+            key="title"
+            class="title font-weight-light grey--text pa-4 text-center"
+          >
+            左侧打开文件查看源码
+          </div>
+        </template>
       </v-col>
     </v-row>
 
     <v-divider />
 
     <v-card-actions>
-      <v-btn
-        text
-        @click="tree = []"
-      >
-        Reset
-      </v-btn>
-
       <v-spacer />
-
       <v-btn
         class="white--text"
         color="green darken-1"
         depressed
+        @click="saveFile"
       >
-        Save
+        保存
         <v-icon right>
           mdi-content-save
         </v-icon>
       </v-btn>
     </v-card-actions>
+    <createdialog
+      :dialogloading="dialogloading"
+      :createstatus="createstatus"
+      :dialog.sync="dialog"
+      :nowfile="nowfile"
+      :dialogsave="dialogsave"
+      :dialogcontent.sync="dialogcontent"
+    />
+    <deletefile :deleteoption="deleteoption" :closedelete="closeDelete" />
   </v-card>
 </template>
 <script>
 import Codeedit from '@/components/editor/codeedit.vue'
+import Createdialog from './createdialog.vue'
+import Deletefile from './deletefile.vue'
+
+function find (arr, path) {
+  if (arr == null) { return null }
+  for (const obj of arr) {
+    if (obj.path === path) {
+      return collect(obj, path)
+    }
+    // eslint-disable-next-line no-unused-vars
+    const ret = find(obj.children, path)
+    if (ret) { return ret }
+  }
+  return null
+}
+
+function collect (obj, path) {
+  let ret = obj
+  if (obj.path === path) {
+    return ret
+  }
+  if (obj.children) {
+    for (const o of obj.children) {
+      ret = [...ret, ...collect(o)]
+    }
+  }
+  return ret
+}
+
 export default {
   components: {
-    Codeedit
+    Codeedit,
+    Createdialog,
+    Deletefile
   },
   props: {
     listFile: {
@@ -74,11 +123,13 @@ export default {
       default: null
     }
   },
+
   data: () => ({
-    breweries: [],
-    isLoading: false,
-    tree: [],
-    types: [],
+    dialog: false,
+    dialogcontent: '',
+    dialogloading: false,
+    activeFile: [],
+    nowfile: {},
     files: {
       html: 'mdi-language-html5',
       js: 'mdi-nodejs',
@@ -88,70 +139,170 @@ export default {
       png: 'mdi-file-image',
       txt: 'mdi-file-document-outline',
       xls: 'mdi-file-excel'
+    },
+    // codeedit
+    fileContent: '',
+    fileName: '',
+    dialogsave: null,
+    createstatus: 1, // 1为文件夹,2为文件
+    deleteoption: {
+      loading: false,
+      show: false
     }
   }),
-  computed: {
-    items () {
-      const children = this.types.map(type => ({
-        id: type,
-        name: this.getName(type),
-        children: this.getChildren(type)
-      }))
-      return [{
-        id: 1,
-        name: 'All Breweries',
-        children
-      }]
-    },
-    shouldShowTree () {
-      return this.breweries.length > 0 && !this.isLoading
-    }
-  },
   watch: {
-    breweries (val) {
-      this.types = val.reduce((acc, cur) => {
-        const type = cur.brewery_type
-        if (!acc.includes(type)) { acc.push(type) }
-        return acc
-      }, []).sort()
+    activeFile (value) {
+      if (value.length <= 0 || !value) { return }
+      const arr = value[0].split('/')
+      const file = arr[arr.length - 1]
+      if (!file) { return }
+      this.getFile(file, value[0])
     }
   },
   created () {
   },
   mounted () {
-    // this.createFile()
   },
   methods: {
-    createFile () {
-      const filePath = '/123'
-      const url = `/api/v1/editor/write/${filePath}`
+    closeDelete () {
+      this.deleteoption.show = false
+    },
+    rightShow (item) {
+      const dirmenu = [{
+        label: '新建文件',
+        onClick: () => {
+          this.nowfile = item
+          this.dialog = true
+          this.createstatus = 2
+          this.dialogsave = value => this.createFile(item, item.path + '/' + this.dialogcontent, this.dialogcontent)
+        }
+      },
+      {
+        label: '新建文件夹',
+        onClick: () => {
+          this.nowfile = item
+          this.dialog = true
+          this.createstatus = 1
+          this.dialogsave = value => this.createDirectory(item, item.path + '/' + this.dialogcontent, this.dialogcontent)
+        }
+      }]
+      const filemenu = [{
+        label: '删除文件',
+        onClick: () => {
+          this.nowfile = item
+          this.deleteoption.show = true
+        }
+      },
+      {
+        label: '重命名文件',
+        onClick: () => {
+          this.nowfile = item
+          this.dialog = true
+        }
+      }]
+      const menu = item.file ? filemenu : dirmenu
+      this.$contextmenu({
+        items: menu,
+        event,
+        customClass: this.useCustomClass ? 'custom-class' : '',
+        zIndex: 3,
+        minWidth: 230
+      })
+      event.preventDefault()
+    },
+    createFile (item, path, filename) {
+      this.dialogloading = true
+      const url = '/api/v1/editor/write'
+      const body = {
+        file_path: path,
+        data: 'txt'
+      }
       this.$axios
-        .post(url)
+        .post(url, body)
         .then((res) => {
-          console.log(res)
+          if (!find(this.listFile, item.path).children) {
+            find(this.listFile, item.path).children = []
+          }
+          find(this.listFile, item.path).children.push({
+            path,
+            name: filename,
+            file: 'txt'
+          })
+          this.fileContent = ''
+          this.$toast.success(res.data)
+        })
+        .catch((error) => {
+          this.$toast.error(error.response.data)
+        })
+        .finally(() => {
+          this.dialogloading = false
+        })
+    },
+    createDirectory (item, path, filename) {
+      this.dialogloading = true
+      const url = '/api/v1/editor/create'
+      const body = {
+        directory: path
+      }
+      this.$axios
+        .post(url, body)
+        .then((res) => {
+          if (!find(this.listFile, item.path).children) {
+            find(this.listFile, item.path).children = []
+          }
+          find(this.listFile, item.path).children.push({
+            path,
+            name: filename
+          })
+          this.$toast.success(res.data)
+          this.fileContent = ''
+        })
+        .catch((error) => {
+          this.$toast.error(error.response.data)
+        })
+        .finally(() => {
+          this.dialogloading = false
+        })
+    },
+    getFile (filename, path) {
+      const url = '/api/v1/editor/read'
+      const params = {
+        file_path: path
+      }
+      this.$axios
+        .get(url, { params })
+        .then((res) => {
+          this.fileContent = res.data
+          this.fileName = filename
         })
         .catch((error) => {
           this.$toast.error(error.response.data)
         })
     },
-    getChildren (type) {
-      const breweries = []
-      for (const brewery of this.breweries) {
-        if (brewery.brewery_type !== type) { continue }
-
-        breweries.push({
-          ...brewery,
-          name: this.getName(brewery.name)
-        })
+    saveFile () {
+      const url = '/api/v1/editor/write'
+      const body = {
+        file_path: this.fileName,
+        data: this.fileContent
       }
-
-      return breweries.sort((a, b) => {
-        return a.name > b.name ? 1 : -1
-      })
-    },
-    getName (name) {
-      return `${name.charAt(0).toUpperCase()}${name.slice(1)}`
+      this.$axios
+        .post(url, body)
+        .then((res) => {
+          this.$toast.success(res.data)
+        })
+        .catch((error) => {
+          this.$toast.error(error.response.data)
+        })
     }
+
   }
 }
 </script>
+
+<style lang="scss">
+  #treeview{
+  .v-treeview-node__root{
+      min-height:unset
+    }
+  }
+</style>

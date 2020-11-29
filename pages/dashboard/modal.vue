@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nuxt />
+    <nuxt-child />
   </div>
 </template>
 <script>

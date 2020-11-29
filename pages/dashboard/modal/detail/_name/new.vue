@@ -32,24 +32,25 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    // trash垃圾箱 outline草稿箱 online已发布 noseacrh已发布不索引 all全部,索引分别为0,1,2,3,10
     createArticle () {
       this.loading.save = true
       const url = '/api/v1/article/create'
       const body = {
         title: this.form.title,
         content: this.form.content,
-        description: '312312',
+        description: this.description,
         seo_title: this.form.seo_title,
         seo_keywords: this.form.seo_keywords,
         seo_description: this.form.seo_description,
-        status: 0,
+        status: 2,
         is_release: false,
         can_search: true
       }
       this.$axios
         .post(url, body)
         .then((res) => {
-          this.$toast.success('文章创建成功')
+          this.$toast.success('文章创建成功,并且索引发布')
           this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
         })
         .catch((error) => {
@@ -60,7 +61,31 @@ export default {
         })
     },
     createDrafts () {
-      alert('asd')
+      this.loading.save = true
+      const url = '/api/v1/article/create'
+      const body = {
+        title: this.form.title,
+        content: this.form.content,
+        description: this.description,
+        seo_title: this.form.seo_title,
+        seo_keywords: this.form.seo_keywords,
+        seo_description: this.form.seo_description,
+        status: 1,
+        is_release: false,
+        can_search: false
+      }
+      this.$axios
+        .post(url, body)
+        .then((res) => {
+          this.$toast.success('文章创建成功并存入草稿箱')
+          this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
+        })
+        .catch((error) => {
+          this.$toast.error(error.response.data)
+        })
+        .finally(() => {
+          this.loading.save = false
+        })
     }
   },
   head () {

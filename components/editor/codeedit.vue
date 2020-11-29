@@ -1,38 +1,56 @@
 <template>
-  <!-- if Nust.js/SSR（如果在 Nuxt.js 环境下，需要外面包裹一层 no-ssr） -->
-  <no-ssr placeholder="Codemirror Loading...">
-    <codemirror
-      ref="myCm"
-      :value="code"
-      :options="cmOptions"
-      @ready="onCmReady"
-      @focus="onCmFocus"
-      @input="onCmCodeChange"
-    />
-  </no-ssr>
+  <div>
+    <div class="mb-3">
+      当前文件名:{{ fileName }}
+    </div>
+    <no-ssr placeholder="Codemirror Loading...">
+      <codemirror
+        ref="myCm"
+        :disable="true"
+        :value="fileContent"
+        :options="options"
+        @ready="onCmReady"
+        @focus="onCmFocus"
+        @input="onCmCodeChange"
+      />
+    </no-ssr>
+  </div>
 </template>
 
 <script>
 
 export default {
+  props: {
+    fileContent: {
+      type: String,
+      default: ''
+    },
+    nowfile: {
+      type: Object,
+      default: null
+    },
+    fileName: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
-      code: 'const a = 10',
-      cmOptions: {
-        tabSize: 4,
-        styleActiveLine: true,
-        lineNumbers: true,
-        line: true,
-        foldGutter: true,
-        styleSelectedText: true,
+      options: {
+        // 缩进格式
         mode: 'text/javascript',
-        // keyMap: 'sublime',
-        matchBrackets: true,
-        showCursorWhenSelecting: true,
-        theme: 'monokai',
-        extraKeys: { Ctrl: 'autocomplete' },
-        hintOptions: {
-          completeSingle: false
+        tabSize: 2,
+        // 主题，对应主题库 JS 需要提前引入
+        // theme: 'cobalt',
+        // 显示行号
+        lineNumbers: true,
+        extraKeys: { Ctrl: 'autocomplete' }, // ctrl唤起智能提示
+        line: true,
+        hintOptions: { // 自定义提示选项
+          tables: {
+            users: ['name', 'score', 'birthDate'],
+            countries: ['name', 'population', 'size']
+          }
         }
       }
     }
@@ -51,9 +69,10 @@ export default {
       console.log('the editor is focus!', cm)
     },
     onCmCodeChange (newCode) {
-      console.log('this is new code', newCode)
-      this.code = newCode
+      // console.log(this.$refs.myCm.showHint())
+      this.$emit('update:fileContent', newCode)
     }
+
   }
 }
 </script>

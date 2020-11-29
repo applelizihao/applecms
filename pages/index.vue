@@ -14,7 +14,8 @@ export default {
   computed: {},
   watch: {},
   beforeMount () {},
-  mounted () {},
+  mounted () {
+  },
   methods: {},
   head () {
     return {
