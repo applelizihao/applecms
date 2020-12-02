@@ -11,7 +11,7 @@
         <v-btn color="primary" @click="close">
           取消
         </v-btn>
-        <v-btn color="error darken-1" @click="save">
+        <v-btn color="error darken-1" :loading="deleteoption.loading" @click="save">
           删除
         </v-btn>
         <v-spacer />
@@ -46,7 +46,7 @@ export default {
       this.closedelete()
     },
     save () {
-      this.deletefile()
+      this.deleteoption.deletefile()
     }
   }
 }

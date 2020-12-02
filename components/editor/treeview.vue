@@ -10,7 +10,7 @@
     </v-toolbar>
     <v-row>
       <v-col>
-        <v-card-text>
+        <v-card-text class="pb-0">
           <v-treeview
             :items="listFile"
             item-key="path"
@@ -35,12 +35,13 @@
             </template>
           </v-treeview>
         </v-card-text>
+        <div class="pb-5" @contextmenu.prevent="rightShow({path:'',name:''},'')" />
       </v-col>
       <v-divider vertical />
       <v-col cols="12" md="8" :class="{'d-flex justify-center align-center':!fileName}">
         <template v-if="fileName">
           <!-- eslint-disable-next-line vue/attribute-hyphenation -->
-          <codeedit :fileContent.sync="fileContent" :fileName="fileName" />
+          <codeedit :fileContent.sync="fileContent" :fileName="fileName" :saveFile="saveFile" />
         </template>
         <template v-else>
           <div
@@ -54,13 +55,13 @@
     </v-row>
 
     <v-divider />
-
-    <v-card-actions>
+    <v-card-actions v-if="fileName">
       <v-spacer />
       <v-btn
         class="white--text"
         color="green darken-1"
         depressed
+        :loading="saveFileLoading"
         @click="saveFile"
       >
         保存
@@ -77,7 +78,7 @@
       :dialogsave="dialogsave"
       :dialogcontent.sync="dialogcontent"
     />
-    <deletefile :deleteoption="deleteoption" :closedelete="closeDelete" />
+    <deletefile :deleteoption="deleteoption" :closedelete="closedelete" />
   </v-card>
 </template>
 <script>
@@ -109,6 +110,26 @@ function collect (obj, path) {
     }
   }
   return ret
+}
+
+function removefile (showlist, path) {
+  if (typeof showlist === 'object') {
+    // 如果showList是一个object，遍历showlist
+    for (let i = 0; i < showlist.length; i++) {
+      const element = showlist[i]
+      if (element.path === path) {
+        showlist.splice(i, 1)
+        // 注意删除了一项后，索引-1
+        i--
+      } else {
+        // 遍历其子节点
+        // eslint-disable-next-line no-unused-vars
+        removefile(element.children, path)
+      }
+    }
+  } else {
+    // 子节点不存在则结束
+  }
 }
 
 export default {
@@ -147,14 +168,18 @@ export default {
     createstatus: 1, // 1为文件夹,2为文件
     deleteoption: {
       loading: false,
-      show: false
-    }
+      show: false,
+      deletefile: null
+    },
+    saveFileLoading: false
   }),
   watch: {
     activeFile (value) {
       if (value.length <= 0 || !value) { return }
       const arr = value[0].split('/')
       const file = arr[arr.length - 1]
+      const items = find(this.listFile, value[0])
+      if (!items.file && items.children.length === 0) { return }
       if (!file) { return }
       this.getFile(file, value[0])
     }
@@ -164,17 +189,48 @@ export default {
   mounted () {
   },
   methods: {
-    closeDelete () {
+    deleteDirectory () {
+      // /api/v1/editor/delete/directory
+    },
+    closedelete (item) {
       this.deleteoption.show = false
     },
+    deletefile (item, type) {
+      this.deleteoption.loading = true
+      console.log(item.path)
+      const url = type === 'file' ? '/api/v1/editor/delete' : '/api/v1/editor/delete/directory'
+      const body = type === 'file' ? {
+        file_path: item.path
+      } : {
+        directory: item.path
+      }
+      console.log(body)
+      this.$axios.delete(url, {
+        params: body
+      })
+        .then((res) => {
+          removefile(this.listFile, item.path)
+          this.$toast.success(res.data)
+          this.deleteoption.show = false
+        })
+        .catch((error) => {
+          this.$toast.error(error.response.data)
+        })
+        .finally(() => {
+          this.deleteoption.loading = false
+        })
+    },
     rightShow (item) {
+      // eslint-disable-next-line camelcase
+      const add_path = item.path ? '/' : ''
       const dirmenu = [{
         label: '新建文件',
         onClick: () => {
           this.nowfile = item
           this.dialog = true
           this.createstatus = 2
-          this.dialogsave = value => this.createFile(item, item.path + '/' + this.dialogcontent, this.dialogcontent)
+          // eslint-disable-next-line camelcase
+          this.dialogsave = value => this.createFile(item, item.path + add_path + this.dialogcontent, this.dialogcontent)
         }
       },
       {
@@ -183,7 +239,15 @@ export default {
           this.nowfile = item
           this.dialog = true
           this.createstatus = 1
-          this.dialogsave = value => this.createDirectory(item, item.path + '/' + this.dialogcontent, this.dialogcontent)
+          // eslint-disable-next-line camelcase
+          this.dialogsave = value => this.createDirectory(item, item.path + add_path + this.dialogcontent, this.dialogcontent)
+        }
+      }, {
+        label: '删除文件夹',
+        onClick: () => {
+          this.nowfile = item
+          this.deleteoption.show = true
+          this.deleteoption.deletefile = () => this.deletefile(item, 'directory')
         }
       }]
       const filemenu = [{
@@ -191,25 +255,29 @@ export default {
         onClick: () => {
           this.nowfile = item
           this.deleteoption.show = true
+          this.deleteoption.deletefile = () => this.deletefile(item, 'file')
         }
-      },
-      {
-        label: '重命名文件',
-        onClick: () => {
-          this.nowfile = item
-          this.dialog = true
-        }
-      }]
+      }
+        // {
+        //   label: '重命名文件',
+        //   onClick: () => {
+        //     this.nowfile = item
+        //     this.dialog = true
+        //   }
+        // }
+
+      ]
       const menu = item.file ? filemenu : dirmenu
       this.$contextmenu({
         items: menu,
         event,
         customClass: this.useCustomClass ? 'custom-class' : '',
         zIndex: 3,
-        minWidth: 230
+        minWidth: 150
       })
       event.preventDefault()
     },
+    // 创建文件
     createFile (item, path, filename) {
       this.dialogloading = true
       const url = '/api/v1/editor/write'
@@ -220,16 +288,26 @@ export default {
       this.$axios
         .post(url, body)
         .then((res) => {
-          if (!find(this.listFile, item.path).children) {
-            find(this.listFile, item.path).children = []
+          if (item.path === '') {
+            // 如果是根目录则
+            this.listFile.push({
+              path,
+              name: filename,
+              file: 'txt'
+            })
+          } else {
+            if (!find(this.listFile, item.path).children) {
+              find(this.listFile, item.path).children = []
+            }
+            find(this.listFile, item.path).children.push({
+              path,
+              name: filename,
+              file: 'txt'
+            })
           }
-          find(this.listFile, item.path).children.push({
-            path,
-            name: filename,
-            file: 'txt'
-          })
           this.fileContent = ''
           this.$toast.success(res.data)
+          this.dialog = false
         })
         .catch((error) => {
           this.$toast.error(error.response.data)
@@ -238,6 +316,7 @@ export default {
           this.dialogloading = false
         })
     },
+    // 创建文件夹
     createDirectory (item, path, filename) {
       this.dialogloading = true
       const url = '/api/v1/editor/create'
@@ -247,15 +326,26 @@ export default {
       this.$axios
         .post(url, body)
         .then((res) => {
-          if (!find(this.listFile, item.path).children) {
-            find(this.listFile, item.path).children = []
+          if (item.path === '') {
+            // 如果是根目录则
+            this.listFile.push({
+              path,
+              name: filename,
+              children: []
+            })
+          } else {
+            if (!find(this.listFile, item.path).children) {
+              find(this.listFile, item.path).children = []
+            }
+            find(this.listFile, item.path).children.push({
+              path,
+              name: filename,
+              children: []
+            })
           }
-          find(this.listFile, item.path).children.push({
-            path,
-            name: filename
-          })
           this.$toast.success(res.data)
           this.fileContent = ''
+          this.dialog = false
         })
         .catch((error) => {
           this.$toast.error(error.response.data)
@@ -264,6 +354,7 @@ export default {
           this.dialogloading = false
         })
     },
+    // 获取文件
     getFile (filename, path) {
       const url = '/api/v1/editor/read'
       const params = {
@@ -279,10 +370,12 @@ export default {
           this.$toast.error(error.response.data)
         })
     },
+    // 保存文件
     saveFile () {
+      this.saveFileLoading = true
       const url = '/api/v1/editor/write'
       const body = {
-        file_path: this.fileName,
+        file_path: this.activeFile[0],
         data: this.fileContent
       }
       this.$axios
@@ -292,6 +385,9 @@ export default {
         })
         .catch((error) => {
           this.$toast.error(error.response.data)
+        })
+        .finally(() => {
+          this.saveFileLoading = false
         })
     }
 

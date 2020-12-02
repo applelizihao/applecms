@@ -9,6 +9,7 @@
         :disable="true"
         :value="fileContent"
         :options="options"
+        @keydown.s="saveFile"
         @ready="onCmReady"
         @focus="onCmFocus"
         @input="onCmCodeChange"
@@ -25,6 +26,10 @@ export default {
       type: String,
       default: ''
     },
+    saveFile: {
+      type: Function,
+      default: null
+    },
     nowfile: {
       type: Object,
       default: null
@@ -38,7 +43,7 @@ export default {
     return {
       options: {
         // 缩进格式
-        mode: 'text/javascript',
+        mode: 'html',
         tabSize: 2,
         // 主题，对应主题库 JS 需要提前引入
         // theme: 'cobalt',
@@ -59,7 +64,6 @@ export default {
 
   },
   mounted () {
-
   },
   methods: {
     onCmReady (cm) {

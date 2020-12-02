@@ -30,7 +30,6 @@ export default {
         .get(url)
         .then((res) => {
           this.listFile = res.data
-          console.log(this.listFile)
         })
         .catch((error) => {
           this.$toast.error(error.response.data)
