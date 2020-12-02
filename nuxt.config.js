@@ -29,7 +29,7 @@ export default {
   },
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    { src: '@/plugins/vuetify', ssr: false },
+    { src: '@/plugins/toasted', ssr: false },
     { src: '@/plugins/persistedState.js', ssr: false },
     { src: '@/plugins/axios' },
     { src: '@/plugins/vue-markdown.js', ssr: false },
