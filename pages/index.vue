@@ -15,6 +15,7 @@ export default {
   watch: {},
   beforeMount () {},
   mounted () {
+    console.log(this.$toasted.info('hello billo'))
   },
   methods: {},
   head () {

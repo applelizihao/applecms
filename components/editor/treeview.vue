@@ -210,11 +210,11 @@ export default {
       })
         .then((res) => {
           removefile(this.listFile, item.path)
-          this.$toast.success(res.data)
+          this.$toasted.success(res.data)
           this.deleteoption.show = false
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.deleteoption.loading = false
@@ -306,11 +306,11 @@ export default {
             })
           }
           this.fileContent = ''
-          this.$toast.success(res.data)
+          this.$toasted.success(res.data)
           this.dialog = false
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.dialogloading = false
@@ -343,12 +343,12 @@ export default {
               children: []
             })
           }
-          this.$toast.success(res.data)
+          this.$toasted.success(res.data)
           this.fileContent = ''
           this.dialog = false
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.dialogloading = false
@@ -367,7 +367,7 @@ export default {
           this.fileName = filename
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
     },
     // 保存文件
@@ -381,10 +381,10 @@ export default {
       this.$axios
         .post(url, body)
         .then((res) => {
-          this.$toast.success(res.data)
+          this.$toasted.success(res.data)
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.saveFileLoading = false

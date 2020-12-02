@@ -113,10 +113,10 @@ export default {
       this.$axios
         .delete(url, { params })
         .then((res) => {
-          this.$toast.success(res.data)
+          this.$toasted.success(res.data)
         })
         .catch((error) => {
-          this.$toast.error(error.response.data.detail)
+          this.$toasted.error(error.response.data.detail)
         })
         .finally(() => {
           this.loading.reg = false
@@ -132,7 +132,7 @@ export default {
           // this.detailList = res.data
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.loading.reg = false

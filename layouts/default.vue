@@ -17,5 +17,14 @@ export default {
   methods: {}
 }
 </script>
-<style lang='less' scoped>
+<style lang='scss'>
+.toasted-container{
+  right: 2% !important;
+  bottom: 3% !important;
+  .vue-toasted{
+  min-width: 280px;
+  bottom: 0;
+  }
+}
+
 </style>

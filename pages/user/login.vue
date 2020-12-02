@@ -94,10 +94,10 @@ export default {
         .then((res) => {
           this.$store.commit('SET_TOKEN', res.data.token)
           this.$router.push('/dashboard')
-          this.$toast.success('登录成功')
+          this.$toasted.success('登录成功')
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.loading.reg = false

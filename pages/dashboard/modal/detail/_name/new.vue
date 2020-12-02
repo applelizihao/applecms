@@ -50,11 +50,11 @@ export default {
       this.$axios
         .post(url, body)
         .then((res) => {
-          this.$toast.success('文章创建成功,并且索引发布')
+          this.$toasted.success('文章创建成功,并且索引发布')
           this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.loading.save = false
@@ -77,11 +77,11 @@ export default {
       this.$axios
         .post(url, body)
         .then((res) => {
-          this.$toast.success('文章创建成功并存入草稿箱')
+          this.$toasted.success('文章创建成功并存入草稿箱')
           this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.loading.save = false

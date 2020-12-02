@@ -30,7 +30,7 @@ export default {
       this.$axios
         .post(url, formData)
         .then((res) => {
-          this.$toast.success('分类创建成功')
+          this.$toasted.success('分类创建成功')
         })
         .finally(() => {
           this.loading.reg = false

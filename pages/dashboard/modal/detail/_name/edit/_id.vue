@@ -66,7 +66,7 @@ export default {
       this.$axios
         .put(url, body)
         .then((res) => {
-          this.$toast.success('成功修改文章')
+          this.$toasted.success('成功修改文章')
           this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
         })
         .finally(() => {

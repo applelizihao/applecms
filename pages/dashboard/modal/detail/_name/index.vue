@@ -190,7 +190,7 @@ export default {
       this.$axios
         .delete(url)
         .then((res) => {
-          this.$toast.success(res.data)
+          this.$toasted.success(res.data)
           if (this.dialogStatus === 0) {
             this.detailList.splice(_index, 1)
           } else {
@@ -198,7 +198,7 @@ export default {
           }
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.loading.delete = false
@@ -215,7 +215,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          // this.$toast.error()
+          // this.$toasted.error()
         })
         .finally(() => {
           this.loading.getList = false

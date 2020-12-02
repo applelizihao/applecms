@@ -32,7 +32,7 @@ export default {
           this.listFile = res.data
         })
         .catch((error) => {
-          this.$toast.error(error.response.data)
+          this.$toasted.error(error.response.data)
         })
     }
   },

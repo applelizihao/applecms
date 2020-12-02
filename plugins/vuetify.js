@@ -1,21 +1,10 @@
 import Vue from 'vue'
-import Vuetify, { VSnackbar, VBtn, VIcon } from 'vuetify/lib'
-import VuetifyToast from 'vuetify-toast-snackbar'
+// register the plugin on vue
+import Toasted from 'vue-toasted'
 
-Vue.use(Vuetify, {
-  components: {
-    VSnackbar,
-    VBtn,
-    VIcon
-  }
+// you can also pass options, check options reference below
+Vue.use(Toasted, {
+  position: 'bottom-right',
+  duration: 300000,
+  className: 'vue-toasted'
 })
-
-const opts = {
-  timeout: 2000
-}
-
-const vueObj = new Vuetify(opts)
-
-export default vueObj
-
-Vue.use(VuetifyToast, { $vuetify: vueObj.framework })

@@ -38,7 +38,7 @@ export default {
     singOut () {
       this.$store.commit('DELETE_TOKEN')
       this.$router.push('/user/login')
-      this.$toast.success('成功退出账号')
+      this.$toasted.success('成功退出账号')
     }
   }
 }

@@ -91,7 +91,7 @@ export default {
       this.$axios
         .post(url, body)
         .then((res) => {
-          this.$toast.success('注册成功')
+          this.$toasted.success('注册成功')
           this.$router.push('/user/login')
         })
         .finally(() => {
