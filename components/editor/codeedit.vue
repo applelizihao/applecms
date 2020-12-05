@@ -3,7 +3,7 @@
     <div class="mb-3">
       当前文件名:{{ fileName }}
     </div>
-    <no-ssr placeholder="Codemirror Loading...">
+    <client-only placeholder="Codemirror Loading...">
       <codemirror
         ref="myCm"
         :disable="true"
@@ -14,7 +14,7 @@
         @focus="onCmFocus"
         @input="onCmCodeChange"
       />
-    </no-ssr>
+    </client-only>
   </div>
 </template>
 

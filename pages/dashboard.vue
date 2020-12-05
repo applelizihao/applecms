@@ -107,7 +107,7 @@ export default {
         {
           icon: 'mdi-book',
           text: '管理员中心',
-          link: 'managingusers'
+          link: 'managingusers/users'
         },
         {
           icon: 'mdi-book',

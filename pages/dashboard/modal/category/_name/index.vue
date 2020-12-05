@@ -5,19 +5,42 @@
         文章分类列表
       </p>
       <v-btn color="success" to="new" rounded append>
-        新增分类
+        新增文章
       </v-btn>
     </div>
-    <template v-if="detailList.length>0">
-      <v-data-table :headers="headers" :items="detailList" :items-per-page="15" class="elevation-1">
+    <template>
+      <v-data-table
+        :loading="loading.getList"
+        :headers="headers"
+        :items="detailList"
+        :items-per-page="15"
+        class="elevation-1"
+      >
+        <template v-slot:top>
+          <v-toolbar class="align-center" flat>
+            <!-- <v-toolbar-title></v-toolbar-title> -->
+            <v-spacer />
+            <div class="mt-8">
+              <v-select v-model="screen" :items="options" label="筛选" solo dense />
+            </div>
+          </v-toolbar>
+        </template>
         <!-- eslint-disable-next-line -->
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)">
+          <v-icon small class="mr-2" color=" primary" @click="editItem(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteItem(item)">
+          <v-icon small :color="item.status === 0 ? 'error' : 'warning'" @click="deleteItem(item)">
             mdi-delete
           </v-icon>
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.create_date="{ item }">
+          {{ item.create_date | utcTime(item.create_date) }}
+        </template>
+        <!-- eslint-disable-next-line -->
+        <template v-slot:item.update_date="{ item }">
+          {{ item.update_date | utcTime(item.update_date) }}
         </template>
       </v-data-table>
     </template>
@@ -25,19 +48,31 @@
       <v-card>
         <v-card-title class="headline  ">
           <div class="text-center" style="width:100%">
-            <h5> 你确定要删除这篇文章吗?</h5>
+            <h5>
+              <template v-if="dialogStatus ===0">
+                你确定要删除这篇文章吗?
+              </template>
+              <template v-else>
+                你确定要将这篇文章放入回收站吗
+              </template>
+            </h5>
             <span class="text-body-2 text--secondary">
-              删除后他将会进入垃圾箱，并不会真正意义上的删除
+              <template v-if="dialogStatus ===0">
+                他将被永久删除
+              </template>
+              <template v-else>
+                删除后他将会进入垃圾箱，并不会真正意义上的删除
+              </template>
             </span>
           </div>
         </v-card-title>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="closeDelete">
-            Cancel
+            取消
           </v-btn>
-          <v-btn color="error darken-1" @click="deleteItemConfirm">
-            OK
+          <v-btn color="error darken-1" :loading="loading.delete" @click="deleteItemConfirm">
+            删除
           </v-btn>
           <v-spacer />
         </v-card-actions>
@@ -76,20 +111,61 @@ export default {
         value: 'image'
       },
       {
-        text: 'Actions',
+        text: '创建时间',
+        value: 'create_date'
+      },
+      {
+        text: '更新时间',
+        value: 'update_date'
+      },
+      {
+        text: '操作',
         value: 'actions',
         sortable: false
       }
       ],
       dialogDelete: false,
       loading: {
-        reg: false
-      }
+        getList: true,
+        delete: false
+      },
+      dialogItem: {},
+      screen: 'all',
+      options: [{
+        text: '全部',
+        value: 'all'
+      }, {
+        text: '垃圾箱',
+        value: 'trash'
+      }, {
+        text: '草稿箱',
+        value: 'outline'
+      }, {
+        text: '已发布',
+        value: 'online'
+      }, {
+        text: '已发布不索引',
+        value: 'noseacrh'
+      }]
+      // 读取自己的文章,注意在url中加入状态,trash垃圾箱 outline草稿箱 online已发布 noseacrh已发布不索引 all全部,索引分别为0,1,2,3,10
     }
   },
-  computed: {},
-  watch: {},
-  created () {
+  computed: {
+    dialogStatus () {
+      return this.dialogItem.status
+    },
+    modal_name () {
+      return this.$route.params.name
+    }
+  },
+  watch: {
+    screen () {
+      console.log('123312')
+      this.getDetailList()
+    }
+  },
+  created () {},
+  beforeMount () {
     this.getDetailList()
   },
   mounted () {},
@@ -103,49 +179,57 @@ export default {
     },
     closeDelete () {
       this.dialogDelete = false
-      this.dialogItem = null
+      this.dialogItem = {}
     },
     deleteItemConfirm () {
-      const url = '/api/v1/character/delete'
-      const params = {
-        id: this.dialogItem.id
+      const _index = this.detailList.findIndex(el => el.id === this.dialogItem.id)
+      this.loading.delete = true
+      const id = this.dialogItem.id
+      let url = `/api/v1/${this.modal_name}/delete/${id}`
+      if (this.dialogStatus === 0) {
+        url = `/api/v1/${this.modal_name}/real_delete/${id}`
       }
       this.$axios
-        .delete(url, { params })
+        .delete(url)
         .then((res) => {
           this.$toasted.success(res.data)
-        })
-        .catch((error) => {
-          this.$toasted.error(error.response.data.detail)
-        })
-        .finally(() => {
-          this.loading.reg = false
-        })
-    },
-    getDetailList () {
-      this.loading.reg = true
-      const url = '/api/v1/category/read'
-      this.$axios
-        .get(url)
-        .then((res) => {
-          console.log(JSON.parse(res.data))
-          // this.detailList = res.data
+          if (this.dialogStatus === 0) {
+            this.detailList.splice(_index, 1)
+          } else {
+            this.$set(this.detailList[_index], 'status', 0)
+          }
         })
         .catch((error) => {
           this.$toasted.error(error.response.data)
         })
         .finally(() => {
-          this.loading.reg = false
+          this.loading.delete = false
+          this.dialogDelete = false
+        })
+    },
+    getDetailList () {
+      this.loading.getList = true
+      const url = `/api/v1/${this.modal_name}/self/${this.modal_name}s/` + this.screen
+      this.$axios
+        .get(url)
+        .then((res) => {
+          this.detailList = res.data
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data)
+        })
+        .finally(() => {
+          this.loading.getList = false
         })
     }
   },
   head () {
     return {
-      title: '分类列表',
+      title: '创建文章',
       meta: [{
         hid: 'description',
         name: 'description',
-        content: '分类列表'
+        content: '创建文章'
       }]
     }
   }

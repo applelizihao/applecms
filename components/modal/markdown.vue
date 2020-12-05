@@ -3,9 +3,9 @@
     <p class="mb-1">
       文本内容
     </p>
-    <no-ssr>
+    <client-only>
       <mavon-editor v-model="handbook" :toolbars="markdownOption" />
-    </no-ssr>
+    </client-only>
   </div>
 </template>
 <script>

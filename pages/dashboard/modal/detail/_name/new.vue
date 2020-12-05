@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>创建文章</h4>
-    <detailform :data="form" :save="createArticle" :loading="loading" :drafts="createDrafts" />
+    <detailform :data="form" :save="createArticle" :status="'create'" :loading="loading" :drafts="createDrafts" />
   </div>
 </template>
 <script>
@@ -23,11 +23,16 @@ export default {
 
       },
       loading: {
-        save: false
+        save: false,
+        draft: false
       }
     }
   },
-  computed: {},
+  computed: {
+    modal_name () {
+      return this.$route.params.name
+    }
+  },
   watch: {},
   created () {},
   mounted () {},
@@ -35,7 +40,7 @@ export default {
     // trash垃圾箱 outline草稿箱 online已发布 noseacrh已发布不索引 all全部,索引分别为0,1,2,3,10
     createArticle () {
       this.loading.save = true
-      const url = '/api/v1/article/create'
+      const url = `/api/v1/${this.modal_name}/create`
       const body = {
         title: this.form.title,
         content: this.form.content,
@@ -51,7 +56,7 @@ export default {
         .post(url, body)
         .then((res) => {
           this.$toasted.success('文章创建成功,并且索引发布')
-          this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
+          this.$router.push('/dashboard/modal/detail/' + this.modal_name)
         })
         .catch((error) => {
           this.$toasted.error(error.response.data)
@@ -61,8 +66,8 @@ export default {
         })
     },
     createDrafts () {
-      this.loading.save = true
-      const url = '/api/v1/article/create'
+      this.loading.draft = true
+      const url = `/api/v1/${this.modal_name}/create`
       const body = {
         title: this.form.title,
         content: this.form.content,
@@ -78,13 +83,13 @@ export default {
         .post(url, body)
         .then((res) => {
           this.$toasted.success('文章创建成功并存入草稿箱')
-          this.$router.push('/dashboard/modal/detail/' + this.$route.params.name)
+          this.$router.push('/dashboard/modal/detail/' + this.modal_name)
         })
         .catch((error) => {
           this.$toasted.error(error.response.data)
         })
         .finally(() => {
-          this.loading.save = false
+          this.loading.draft = false
         })
     }
   },

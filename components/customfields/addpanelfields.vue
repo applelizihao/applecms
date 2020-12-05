@@ -1,19 +1,11 @@
 <template>
   <v-dialog
-    v-model="dialog"
+    ref="addpanelfields"
+    v-model="dialogfields"
     persistent
-    max-width="600px"
+    max-width="500px"
+    transition="dialog-transition"
   >
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        color="success"
-        dark
-        v-bind="attrs"
-        v-on="on"
-      >
-        新增一组
-      </v-btn>
-    </template>
     <v-card>
       <v-card-title>
         <span>新增一组</span>
@@ -45,7 +37,7 @@
         <v-spacer />
         <v-btn
           color="error darken-1"
-          @click="dialog = false"
+          @click="$emit('update:dialogfields',false)"
         >
           关闭
         </v-btn>
@@ -60,49 +52,34 @@
     </v-card>
   </v-dialog>
 </template>
-
 <script>
 import '@/utils/validate'
 export default {
   name: '',
-  middleware: 'authenticated',
   components: {},
   props: {
-    reg: {
+    dialogfields: {
       type: Boolean,
       default: false
-    },
-    save: {
-      type: Function,
-      default: null
-    },
-    changevalue: {
-      type: Function,
-      default: null
-    },
-    value: {
-      type: String,
-      default: ''
     }
   },
+  middleware: 'authenticated',
   data () {
     return {
-      dialog: false, /* 弹窗状态 */
       valid: false,
-      content: ''
+      content: '',
+      value: '',
+      reg: false
     }
   },
   computed: {},
-  watch: {
-    content () {
-      this.changevalue(this.content)
-    }
-  },
-  created () {
-    this.content = this.value
-  },
+  watch: {},
+  created () {},
   mounted () {},
   methods: {
+    save () {
+
+    }
   }
 }
 </script>

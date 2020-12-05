@@ -49,7 +49,13 @@
       </div>
     </v-col>
     <v-col cols="12">
-      <operation :save="save" :drafts="drafts" :loading="loading" />
+      <operation
+        :save="save"
+        :drafts="drafts"
+        :loading="loading"
+        :status="status"
+        :deletefn="deletefn"
+      />
     </v-col>
   </v-form>
 </template>
@@ -74,9 +80,17 @@ export default {
       type: Function,
       required: true
     },
+    deletefn: {
+      type: Function,
+      required: true
+    },
     drafts: {
       type: Function,
       required: true
+    },
+    status: {
+      type: String,
+      default: null
     }
   },
   data () {

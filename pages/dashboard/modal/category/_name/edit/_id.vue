@@ -1,14 +1,7 @@
 <template>
   <div>
     <h4>修改文章</h4>
-    <detailform
-      :data="form"
-      :save="changeDetail"
-      :loading="loading"
-      :drafts="createDrafts"
-      :deletefn="deletefn"
-      :status="'edit'"
-    />
+    <detailform :data="form" :save="changeDetail" :loading="loading" :drafts="changeDrafts" />
   </div>
 </template>
 <script>
@@ -31,7 +24,7 @@ export default {
       loading: {
         formData: false,
         save: false,
-        delete: false
+        draft: false
       }
     }
   },
@@ -48,23 +41,6 @@ export default {
     this.getDetail()
   },
   methods: {
-    deletefn () {
-      this.loading.delete = true
-      const id = this.$route.params.id
-      const url = `/api/v1/${this.modal_name}/real_delete/` + id
-      this.$axios
-        .delete(url)
-        .then((res) => {
-          this.$toasted.success('永久删除成功,并返回列表页面')
-          this.$router.push('/dashboard/modal/detail/' + this.modal_name)
-        })
-        .catch((error) => {
-          this.$toasted.error(error.response.data)
-        })
-        .finally(() => {
-          this.loading.delete = false
-        })
-    },
     getDetail () {
       this.loading.formData = true
       const id = this.$route.params.id
@@ -102,7 +78,7 @@ export default {
           this.loading.save = false
         })
     },
-    createDrafts () {
+    changeDrafts () {
       alert('asd')
     }
   },

@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ detailList }}
     <div class="d-flex justify-space-between mb-3">
       <p class="mb-1">
         文章详情列表
@@ -45,7 +44,7 @@
         </template>
       </v-data-table>
     </template>
-    <v-dialog v-model="dialogDelete" max-width="500px">
+    <v-dialog v-model="dialogDelete" persistent max-width="500px">
       <v-card>
         <v-card-title class="headline  ">
           <div class="text-center" style="width:100%">
@@ -154,6 +153,9 @@ export default {
   computed: {
     dialogStatus () {
       return this.dialogItem.status
+    },
+    modal_name () {
+      return this.$route.params.name
     }
   },
   watch: {
@@ -183,9 +185,9 @@ export default {
       const _index = this.detailList.findIndex(el => el.id === this.dialogItem.id)
       this.loading.delete = true
       const id = this.dialogItem.id
-      let url = `/api/v1/article/delete/${id}`
+      let url = `/api/v1/${this.modal_name}/delete/${id}`
       if (this.dialogStatus === 0) {
-        url = `/api/v1/article/real_delete/${id}`
+        url = `/api/v1/${this.modal_name}/real_delete/${id}`
       }
       this.$axios
         .delete(url)
@@ -207,15 +209,14 @@ export default {
     },
     getDetailList () {
       this.loading.getList = true
-      const url = '/api/v1/article/self/articles/' + this.screen
+      const url = `/api/v1/${this.modal_name}/self/${this.modal_name}s/` + this.screen
       this.$axios
         .get(url)
         .then((res) => {
           this.detailList = res.data
         })
         .catch((error) => {
-          console.log(error)
-          // this.$toasted.error()
+          this.$toasted.error(error.response.data)
         })
         .finally(() => {
           this.loading.getList = false

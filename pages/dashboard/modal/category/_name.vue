@@ -1,6 +1,6 @@
 <template>
   <div>
-    321
+    <nuxt-child />
   </div>
 </template>
 <script>
@@ -18,9 +18,9 @@ export default {
   methods: {},
   head () {
     return {
-      title: '管理员页面',
+      title: '文章分类',
       meta: [
-        { hid: 'description', name: 'description', content: '管理员页面' }
+        { hid: 'description', name: 'description', content: '文章分类' }
       ]
     }
   }

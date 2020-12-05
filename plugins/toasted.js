@@ -5,6 +5,6 @@ import Toasted from 'vue-toasted'
 // you can also pass options, check options reference below
 Vue.use(Toasted, {
   position: 'bottom-right',
-  duration: 300000,
+  duration: 3000,
   className: 'vue-toasted'
 })

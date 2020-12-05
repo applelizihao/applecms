@@ -1,6 +1,6 @@
 <template>
   <div>
-    这个页面没有数据
+    <nuxt-child />
   </div>
 </template>
 <script>
@@ -15,13 +15,12 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods: {
-  },
+  methods: {},
   head () {
     return {
-      title: '登录',
+      title: '文章列表',
       meta: [
-        { hid: 'description', name: 'description', content: '登录页面' }
+        { hid: 'description', name: 'description', content: '文章列表' }
       ]
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    这个页面没有数据
+    managingusers
   </div>
 </template>
 <script>
@@ -15,13 +15,12 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods: {
-  },
+  methods: {},
   head () {
     return {
-      title: '登录',
+      title: '管理员中心',
       meta: [
-        { hid: 'description', name: 'description', content: '登录页面' }
+        { hid: 'description', name: 'description', content: '管理员中心' }
       ]
     }
   }

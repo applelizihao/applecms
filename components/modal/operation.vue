@@ -1,10 +1,12 @@
 <template>
   <div class="d-flex justify-center mt-4">
     <v-btn
+      v-if="status === 'create'"
       class="ma-2"
       color="primary"
       rounded
       dark
+      :loading="loading.draft"
       @click="drafts"
     >
       <v-icon
@@ -14,6 +16,23 @@
         mdi-plus
       </v-icon>
       保存至草稿箱
+    </v-btn>
+    <v-btn
+      v-if="status === 'edit'"
+      class="ma-2"
+      color="error"
+      rounded
+      :loading="loading.delete"
+      dark
+      @click="deletefn"
+    >
+      <v-icon
+        dark
+        left
+      >
+        mdi-content-save
+      </v-icon>
+      永久删除
     </v-btn>
     <v-btn
       class="ma-2"
@@ -43,6 +62,14 @@ export default {
       required: true
     },
     drafts: {
+      type: Function,
+      required: true
+    },
+    status: {
+      type: String,
+      default: null
+    },
+    deletefn: {
       type: Function,
       required: true
     },
