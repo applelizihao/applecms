@@ -1,10 +1,8 @@
 <template>
   <v-dialog
-    ref="addpanelfields"
     v-model="dialogfields"
     persistent
-    max-width="500px"
-    transition="dialog-transition"
+    max-width="600px"
   >
     <v-card>
       <v-card-title>
@@ -17,14 +15,14 @@
         <v-form ref="form" v-model="valid">
           <ValidationProvider
             v-slot="{ errors }"
-            name="value"
+            name="content"
             rules="required"
           >
             <v-text-field
               id="id"
               v-model="content"
               dense
-              name="value"
+              name="content"
               :error-messages="errors"
               solo
               required
@@ -43,7 +41,7 @@
         </v-btn>
         <v-btn
           color="success darken-1"
-          :disabled="!valid||!value|| reg"
+          :disabled="!valid||!content"
           @click="save"
         >
           保存
@@ -52,33 +50,62 @@
     </v-card>
   </v-dialog>
 </template>
+
 <script>
 import '@/utils/validate'
 export default {
   name: '',
+  middleware: 'authenticated',
   components: {},
   props: {
     dialogfields: {
       type: Boolean,
       default: false
+    },
+    reg: {
+      type: Boolean,
+      default: false
+    },
+    listData: {
+      type: Array,
+      required: true
+    },
+    changeListData: {
+      type: Function,
+      default: null,
+      required: true
     }
   },
-  middleware: 'authenticated',
   data () {
     return {
+      dialog: false, /* 弹窗状态 */
       valid: false,
-      content: '',
-      value: '',
-      reg: false
+      content: ''
     }
   },
   computed: {},
-  watch: {},
-  created () {},
+  watch: {
+  },
+  created () {
+  },
   mounted () {},
   methods: {
     save () {
-
+      let _index
+      let _id
+      if (this.listData.length > 0) {
+        _index = 0
+        _id = new Date().getTime()
+      } else {
+        _index = this.listData.length
+        _id = new Date().getTime()
+      }
+      this.changeListData({
+        id: _id,
+        index: _index,
+        name: this.content
+      })
+      this.$emit('update:dialogfields', false)
     }
   }
 }

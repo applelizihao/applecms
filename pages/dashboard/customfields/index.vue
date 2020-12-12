@@ -3,7 +3,8 @@
     <div class=" d-flex justify-space-between mb-4 align-end">
       <p>自定义字段设置</p>
       <div>
-        <addpanel :save="save" :value="groupname" :changevalue="changevalue" :reg="hasName" />
+        <!-- eslint-disable-next-line vue/attribute-hyphenation -->
+        <addpanel :listData="listData" :changeListData="changeListData" />
       </div>
     </div>
     <v-expansion-panels>
@@ -46,7 +47,8 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <addpanelfields :dialogfields.sync="dialogfields" />
+    <!--  eslint-disable-next-line vue/attribute-hyphenation -->
+    <addpanelfields :listData="listData" :changeListData="changeListData" :dialogfields.sync="dialogfields" />
   </div>
 </template>
 <script>
@@ -103,35 +105,24 @@ export default {
   },
   computed: {},
   watch: {
-    groupname () {
-      // console.log(this.listData.find(item => item.name === '测试'))
-      this.listData.find(item => item.name === this.groupname) ? this.hasName = true : this.hasName = false
-    }
+    // groupname () {
+    //   // console.log(this.listData.find(item => item.name === '测试'))
+    //   this.listData.find(item => item.name === this.groupname) ? this.hasName = true : this.hasName = false
+    // }
   },
   created () {},
   mounted () {
-    console.log(this.$refs)
+    // console.log(this.$refs)
     // console.log(this.listData.find(item => item.name === '测试'))
   },
   methods: {
-    changevalue (value) {
-      this.groupname = value
-    },
-    save () {
-      let _index
-      let _id
-      if (this.listData.length > 0) {
-        _index = 0
-        _id = new Date().getTime()
-      } else {
-        _index = this.listData.length
-        _id = new Date().getTime()
-      }
+    changeListData (obj) {
+      console.log(obj)
       this.listData.push({
         type: 'panel',
-        index: _index,
-        name: this.groupname,
-        id: _id,
+        index: obj.index,
+        name: obj.name,
+        id: obj.id,
         children: []
       })
     }

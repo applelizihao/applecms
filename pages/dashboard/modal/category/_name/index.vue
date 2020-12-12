@@ -1,14 +1,17 @@
 <template>
   <div>
+    <pre>
+    {{ detailList }}
+    </pre>
     <div class="d-flex justify-space-between mb-3">
       <p class="mb-1">
         文章分类列表
       </p>
       <v-btn color="success" to="new" rounded append>
-        新增文章
+        新增分类
       </v-btn>
     </div>
-    <template>
+    <!-- <template>
       <v-data-table
         :loading="loading.getList"
         :headers="headers"
@@ -18,14 +21,12 @@
       >
         <template v-slot:top>
           <v-toolbar class="align-center" flat>
-            <!-- <v-toolbar-title></v-toolbar-title> -->
             <v-spacer />
             <div class="mt-8">
               <v-select v-model="screen" :items="options" label="筛选" solo dense />
             </div>
           </v-toolbar>
         </template>
-        <!-- eslint-disable-next-line -->
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" color=" primary" @click="editItem(item)">
             mdi-pencil
@@ -34,16 +35,14 @@
             mdi-delete
           </v-icon>
         </template>
-        <!-- eslint-disable-next-line -->
         <template v-slot:item.create_date="{ item }">
           {{ item.create_date | utcTime(item.create_date) }}
         </template>
-        <!-- eslint-disable-next-line -->
         <template v-slot:item.update_date="{ item }">
           {{ item.update_date | utcTime(item.update_date) }}
         </template>
       </v-data-table>
-    </template>
+    </template> -->
     <v-dialog v-model="dialogDelete" max-width="500px">
       <v-card>
         <v-card-title class="headline  ">
@@ -161,12 +160,12 @@ export default {
   watch: {
     screen () {
       console.log('123312')
-      this.getDetailList()
+      this.getCategory()
     }
   },
   created () {},
   beforeMount () {
-    this.getDetailList()
+    this.getCategory()
   },
   mounted () {},
   methods: {
@@ -207,12 +206,13 @@ export default {
           this.dialogDelete = false
         })
     },
-    getDetailList () {
+    getCategory () {
       this.loading.getList = true
-      const url = `/api/v1/${this.modal_name}/self/${this.modal_name}s/` + this.screen
+      const url = `/api/v1/category//${this.modal_name}/read`
       this.$axios
         .get(url)
         .then((res) => {
+          console.log(JSON.parse(res.data))
           this.detailList = res.data
         })
         .catch((error) => {

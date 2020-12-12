@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let json = {
+      "id": 0,
+      "max": 7,
+      "name": "root",
+      children: [{
+          "IT": {
+            "id": 1,
+            "name": "IT",
+            children:[{
+              "back end": {
+              "id": 5,
+              "name": "back end"
+            },
+            "font end": {
+              "id": 7,
+              "name": "font end",
+              "test": {
+                "id": 9,
+                "name": "font end",
+              }
+            }
+            }]
+          },
+        },
+        {
+          "lift": {
+            "id": 2,
+            "name": "lift"
+          }
+        }
+
+      ]
+    }
+
+    function resultTree(data) {
+      for (const key in data) {
+        _reg = ['max', 'name', 'id']
+        if (_reg.indexOf(key) >= 0) {
+          // 没有子类
+        } else {
+          if (!data['children']) {
+            data['children'] = []
+          }
+          data['children'].push(data[key])
+          delete data[key]
+        }
+      }
+    }
+    resultTree(json)
+    // console.log(json['children'][0]);
+    console.log(json);
+
+  </script>
+</body>
+
+</html>

@@ -63,7 +63,7 @@ export default {
     proxy: true // Can be also an object with default options
   },
   proxy: {
-    '/api/': 'http://34.96.152.79:5000/'
+    '/api/': 'http://34.92.83.76:5000/'
   },
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {

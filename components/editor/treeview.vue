@@ -197,7 +197,6 @@ export default {
     },
     deletefile (item, type) {
       this.deleteoption.loading = true
-      console.log(item.path)
       const url = type === 'file' ? '/api/v1/editor/delete' : '/api/v1/editor/delete/directory'
       const body = type === 'file' ? {
         file_path: item.path
@@ -214,7 +213,7 @@ export default {
           this.deleteoption.show = false
         })
         .catch((error) => {
-          this.$toasted.error(error.response.data)
+          this.$toasted.error(error.response.data.detail)
         })
         .finally(() => {
           this.deleteoption.loading = false
@@ -279,11 +278,17 @@ export default {
     },
     // 创建文件
     createFile (item, path, filename) {
+      let _dataType
+      if (filename.lastIndexOf('.') === -1) {
+        _dataType = 'txt'
+      } else {
+        _dataType = filename.slice(filename.lastIndexOf('.') + 1)
+      }
       this.dialogloading = true
       const url = '/api/v1/editor/write'
       const body = {
         file_path: path,
-        data: 'txt'
+        data: ''
       }
       this.$axios
         .post(url, body)
@@ -293,7 +298,7 @@ export default {
             this.listFile.push({
               path,
               name: filename,
-              file: 'txt'
+              file: _dataType
             })
           } else {
             if (!find(this.listFile, item.path).children) {
@@ -302,7 +307,7 @@ export default {
             find(this.listFile, item.path).children.push({
               path,
               name: filename,
-              file: 'txt'
+              file: _dataType
             })
           }
           this.fileContent = ''

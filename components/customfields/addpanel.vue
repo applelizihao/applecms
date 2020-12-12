@@ -25,14 +25,14 @@
         <v-form ref="form" v-model="valid">
           <ValidationProvider
             v-slot="{ errors }"
-            name="value"
+            name="content"
             rules="required"
           >
             <v-text-field
               id="id"
               v-model="content"
               dense
-              name="value"
+              name="content"
               :error-messages="errors"
               solo
               required
@@ -51,7 +51,7 @@
         </v-btn>
         <v-btn
           color="success darken-1"
-          :disabled="!valid||!value|| reg"
+          :disabled="!valid||!content"
           @click="save"
         >
           保存
@@ -72,17 +72,14 @@ export default {
       type: Boolean,
       default: false
     },
-    save: {
-      type: Function,
-      default: null
+    listData: {
+      type: Array,
+      required: true
     },
-    changevalue: {
+    changeListData: {
       type: Function,
-      default: null
-    },
-    value: {
-      type: String,
-      default: ''
+      default: null,
+      required: true
     }
   },
   data () {
@@ -94,15 +91,35 @@ export default {
   },
   computed: {},
   watch: {
-    content () {
-      this.changevalue(this.content)
-    }
   },
   created () {
-    this.content = this.value
   },
   mounted () {},
   methods: {
+    save () {
+      let _index
+      let _id
+      if (this.listData.length > 0) {
+        _index = 0
+        _id = new Date().getTime()
+      } else {
+        _index = this.listData.length
+        _id = new Date().getTime()
+      }
+      try {
+        this.changeListData({
+          id: _id,
+          index: _index,
+          name: this.content
+        })
+        this.$toasted.success('添加成功')
+        this.content = ''
+        this.dialog = false
+      } catch (error) {
+        this.$toasted.error('添加失败')
+        console.log(error)
+      }
+    }
   }
 }
 </script>

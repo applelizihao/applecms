@@ -82,7 +82,8 @@ export default {
     },
     deletefn: {
       type: Function,
-      required: true
+      required: false,
+      default () {}
     },
     drafts: {
       type: Function,
@@ -102,17 +103,16 @@ export default {
         category: ['Foo', 'Bar', 'Fizz', 'Buzz'],
         description: ''
       }
-
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+  },
   created () {
     this.form = this.data
   },
   mounted () {},
   methods: {
-
   }
 
 }

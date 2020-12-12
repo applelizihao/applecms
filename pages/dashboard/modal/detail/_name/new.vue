@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ form.description }} 321321
     <h4>创建文章</h4>
     <detailform :data="form" :save="createArticle" :status="'create'" :loading="loading" :drafts="createDrafts" />
   </div>
@@ -20,7 +21,6 @@ export default {
         seo_title: '312312',
         seo_keywords: '312312',
         seo_description: 'dsadasdas'
-
       },
       loading: {
         save: false,
@@ -44,7 +44,7 @@ export default {
       const body = {
         title: this.form.title,
         content: this.form.content,
-        description: this.description,
+        description: this.form.description,
         seo_title: this.form.seo_title,
         seo_keywords: this.form.seo_keywords,
         seo_description: this.form.seo_description,
@@ -71,7 +71,7 @@ export default {
       const body = {
         title: this.form.title,
         content: this.form.content,
-        description: this.description,
+        description: this.form.description,
         seo_title: this.form.seo_title,
         seo_keywords: this.form.seo_keywords,
         seo_description: this.form.seo_description,
