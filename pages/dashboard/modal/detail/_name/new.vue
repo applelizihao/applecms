@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ form.description }} 321321
     <h4>创建文章</h4>
     <detailform :data="form" :save="createArticle" :status="'create'" :loading="loading" :drafts="createDrafts" />
   </div>

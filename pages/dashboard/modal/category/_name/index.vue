@@ -1,8 +1,5 @@
 <template>
   <div>
-    <pre>
-    {{ detailList }}
-    </pre>
     <div class="d-flex justify-space-between mb-3">
       <p class="mb-1">
         文章分类列表
@@ -208,7 +205,7 @@ export default {
     },
     getCategory () {
       this.loading.getList = true
-      const url = `/api/v1/category//${this.modal_name}/read`
+      const url = `/api/v1/category/${this.modal_name}/read`
       this.$axios
         .get(url)
         .then((res) => {

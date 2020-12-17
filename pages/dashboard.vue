@@ -82,7 +82,7 @@ export default {
         {
           icon: 'mdi-contacts',
           text: '模块管理',
-          link: ''
+          link: 'modal/list'
         },
         {
           icon: 'mdi-contacts',
