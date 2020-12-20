@@ -15,11 +15,12 @@ export default {
       form: {
         content: '321321',
         title: '312312321',
-        category: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+        category: [],
         description: 'cascsa',
         seo_title: '312312',
         seo_keywords: '312312',
-        seo_description: 'dsadasdas'
+        seo_description: 'dsadasdas',
+        selectCategory: 0
       },
       loading: {
         save: false,
@@ -45,6 +46,7 @@ export default {
         content: this.form.content,
         description: this.form.description,
         seo_title: this.form.seo_title,
+        category_id: this.form.selectCategory,
         seo_keywords: this.form.seo_keywords,
         seo_description: this.form.seo_description,
         status: 2,
@@ -72,6 +74,7 @@ export default {
         content: this.form.content,
         description: this.form.description,
         seo_title: this.form.seo_title,
+        category_id: this.form.selectCategory,
         seo_keywords: this.form.seo_keywords,
         seo_description: this.form.seo_description,
         status: 1,

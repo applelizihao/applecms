@@ -15,7 +15,7 @@ export default {
       form: {
         content: '',
         title: '',
-        category: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+        category: [],
         description: '',
         seo_title: '',
         seo_keywords: '',

@@ -63,7 +63,7 @@ export default {
     },
     drafts: {
       type: Function,
-      required: true
+      default: null
     },
     status: {
       type: String,

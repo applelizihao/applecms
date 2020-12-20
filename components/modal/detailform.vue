@@ -39,13 +39,7 @@
         >
           设置分类
         </p>
-        <v-select
-          :items="form.category"
-          :loading="loading.formData"
-          label="选择分类"
-          dense
-          solo
-        />
+        <treeselect v-model="form.selectCategory" :multiple="false" :options="form.category" />
       </div>
     </v-col>
     <v-col cols="12">
@@ -60,13 +54,15 @@
   </v-form>
 </template>
 <script>
+import Treeselect from '@riophae/vue-treeselect'
 import Markdown from './markdown.vue'
 import Seoform from './seoform.vue'
 import Vueuploadimgs from './vueuploadimgs.vue'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   name: '',
   middleware: 'authenticated',
-  components: { Markdown, Seoform, Vueuploadimgs },
+  components: { Markdown, Seoform, Vueuploadimgs, Treeselect },
   props: {
     loading: {
       type: Object,
@@ -87,7 +83,8 @@ export default {
     },
     drafts: {
       type: Function,
-      required: true
+      required: false,
+      default: () => {}
     },
     status: {
       type: String,
@@ -100,19 +97,78 @@ export default {
       form: {
         content: '',
         title: '',
-        category: ['Foo', 'Bar', 'Fizz', 'Buzz'],
-        description: ''
-      }
+        category: [],
+        description: '',
+        selectCategory: 0
+      },
+      // define options
+      options: [{
+        id: 'a',
+        label: 'a',
+        children: [{
+          id: 'aa',
+          label: 'aa'
+        }, {
+          id: 'ab',
+          label: 'ab'
+        }]
+      }, {
+        id: 'b',
+        label: 'b'
+      }, {
+        id: 'c',
+        label: 'c'
+      }]
     }
   },
-  computed: {},
+  computed: {
+    modal_name () {
+      return this.$route.params.name
+    }
+  },
   watch: {
   },
   created () {
     this.form = this.data
+    this.getCategory()
   },
   mounted () {},
   methods: {
+    getCategory () {
+      this.loading.getList = true
+      const url = '/api/v1/category/articles/read/json'
+      this.$axios
+        .get(url)
+        .then((res) => {
+          this.form.category = res.data.children
+          this.form.category.unshift({ name: '根分类', id: 0 })
+          this.recursiveTree(this.form.category)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$toasted.error(error)
+        })
+        .finally(() => {
+          this.loading.getList = false
+        })
+    },
+    recursiveTree (tree) {
+      // 格式化：清掉空的children，将title换成label
+      tree.map((item) => {
+        item.label = item.name
+        if (item.children) {
+          if (item.children.length === 0) {
+            delete item.children
+            return
+          }
+          item.children.map((child) => {
+            child.label = child.name
+          })
+          this.recursiveTree(item.children)
+        }
+      })
+      // console.log(tree)
+    }
   }
 
 }

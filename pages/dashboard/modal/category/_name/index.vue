@@ -8,11 +8,11 @@
         新增分类
       </v-btn>
     </div>
-    <!-- <template>
+    <template>
       <v-data-table
         :loading="loading.getList"
         :headers="headers"
-        :items="detailList"
+        :items="categoryList.children"
         :items-per-page="15"
         class="elevation-1"
       >
@@ -24,7 +24,8 @@
             </div>
           </v-toolbar>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <!--  eslint-disable-next-line vue/no-template-shadow -->
+        <!-- <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" color=" primary" @click="editItem(item)">
             mdi-pencil
           </v-icon>
@@ -37,9 +38,9 @@
         </template>
         <template v-slot:item.update_date="{ item }">
           {{ item.update_date | utcTime(item.update_date) }}
-        </template>
+        </template> -->
       </v-data-table>
-    </template> -->
+    </template>
     <v-dialog v-model="dialogDelete" max-width="500px">
       <v-card>
         <v-card-title class="headline  ">
@@ -84,6 +85,7 @@ export default {
   data () {
     return {
       detailList: [],
+      categoryList: [],
       headers: [{
         text: 'ID',
         align: 'start',
@@ -91,20 +93,8 @@ export default {
         value: 'id'
       },
       {
-        text: '标题',
-        value: 'title'
-      },
-      {
-        text: '所属分类',
-        value: 'category'
-      },
-      {
-        text: '描述',
-        value: 'description'
-      },
-      {
-        text: '图片',
-        value: 'image'
+        text: '分类名称',
+        value: 'name'
       },
       {
         text: '创建时间',
@@ -205,12 +195,11 @@ export default {
     },
     getCategory () {
       this.loading.getList = true
-      const url = `/api/v1/category/${this.modal_name}/read`
+      const url = `/api/v1/category/${this.modal_name}/read/json`
       this.$axios
         .get(url)
         .then((res) => {
-          console.log(JSON.parse(res.data))
-          this.detailList = res.data
+          this.categoryList = res.data
         })
         .catch((error) => {
           this.$toasted.error(error.response.data)
@@ -222,16 +211,16 @@ export default {
   },
   head () {
     return {
-      title: '创建文章',
+      title: '创建分类',
       meta: [{
         hid: 'description',
         name: 'description',
-        content: '创建文章'
+        content: '创建分类'
       }]
     }
   }
 }
 
 </script>
-<style lang='scss' scoped>
+<style scoped>
 </style>

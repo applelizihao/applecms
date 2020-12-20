@@ -67,8 +67,8 @@ export default {
   components: {},
   data () {
     return {
-      username: 123123,
-      password: 123123,
+      username: 'admin',
+      password: 'admin',
       valid: true,
       loading: {
         reg: false

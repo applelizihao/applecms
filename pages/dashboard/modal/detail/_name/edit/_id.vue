@@ -22,11 +22,12 @@ export default {
       form: {
         content: '',
         title: '',
-        category: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+        category: [],
         description: '',
         seo_title: '',
         seo_keywords: '',
-        seo_description: ''
+        seo_description: '',
+        selectCategory: 0
       },
       loading: {
         formData: false,
@@ -75,6 +76,7 @@ export default {
           for (const key in res.data) {
             this.$set(this.form, key, res.data[key])
           }
+          this.form.selectCategory = this.form.category_id
         })
         .finally(() => {
           this.loading.formData = false
@@ -90,7 +92,8 @@ export default {
         description: this.form.description,
         seo_title: this.form.seo_title,
         seo_keywords: this.form.seo_keywords,
-        seo_description: this.form.seo_description
+        seo_description: this.form.seo_description,
+        category_id: this.form.selectCategory
       }
       this.$axios
         .put(url, body)
