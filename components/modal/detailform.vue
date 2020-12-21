@@ -1,7 +1,7 @@
 <template>
   <v-form ref="form" v-model="valid" lazy-validation class="row" no-gutters>
     <v-col cols="12" sm="8" md="8">
-      <template v-if="form.name">
+      <template v-if="iscategory">
         <p class="mb-1">
           名称
         </p>
@@ -15,7 +15,7 @@
           required
         />
       </template>
-      <template v-if="form.title">
+      <template v-if="!iscategory">
         <p class="mb-1">
           标题
         </p>
@@ -79,6 +79,11 @@ export default {
   name: '',
   components: { Markdown, Seoform, Vueuploadimgs, Treeselect },
   props: {
+    // eslint-disable-next-line vue/require-default-prop
+    iscategory: {
+      type: Boolean,
+      default: false
+    },
     loading: {
       type: Object,
       required: true

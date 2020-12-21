@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4>修改分类</h4>
-    <detailform :data="form" :save="changeDetail" :loading="loading" :drafts="changeDrafts" />
+    <detailform :iscategory="true" :data="form" :save="changeDetail" :loading="loading" :drafts="changeDrafts" />
   </div>
 </template>
 <script>
