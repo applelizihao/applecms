@@ -8,39 +8,8 @@
         新增分类
       </v-btn>
     </div>
-    <template>
-      <v-data-table
-        :loading="loading.getList"
-        :headers="headers"
-        :items="categoryList.children"
-        :items-per-page="15"
-        class="elevation-1"
-      >
-        <template v-slot:top>
-          <v-toolbar class="align-center" flat>
-            <v-spacer />
-            <div class="mt-8">
-              <v-select v-model="screen" :items="options" label="筛选" solo dense />
-            </div>
-          </v-toolbar>
-        </template>
-        <!--  eslint-disable-next-line vue/no-template-shadow -->
-        <!-- <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" color=" primary" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small :color="item.status === 0 ? 'error' : 'warning'" @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
-        <template v-slot:item.create_date="{ item }">
-          {{ item.create_date | utcTime(item.create_date) }}
-        </template>
-        <template v-slot:item.update_date="{ item }">
-          {{ item.update_date | utcTime(item.update_date) }}
-        </template> -->
-      </v-data-table>
-    </template>
+    <!--  eslint-disable-next-line vue/attribute-hyphenation -->
+    <categorytreetable :categorylist="categoryList.children" :getCategory="getCategory" />
     <v-dialog v-model="dialogDelete" max-width="500px">
       <v-card>
         <v-card-title class="headline  ">
@@ -78,10 +47,11 @@
   </div>
 </template>
 <script>
+import Categorytreetable from '../../../../../components/modal/categorytreetable.vue'
 export default {
   name: '',
   middleware: 'authenticated',
-  components: {},
+  components: { Categorytreetable },
   data () {
     return {
       detailList: [],

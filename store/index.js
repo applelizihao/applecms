@@ -2,6 +2,7 @@ import * as Cookies from 'js-cookie'
 
 export const state = () => ({
   token: null,
+  // image测试值,后期可删除
   user: {
     image: 'https://dss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3807427310,283445384&fm=26&gp=0.jpg'
   }

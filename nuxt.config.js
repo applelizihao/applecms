@@ -16,6 +16,7 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
     '@fortawesome/fontawesome-free/css/all.css',
+    'vxe-table/lib/style.css',
     'mavon-editor/dist/css/index.css',
     // lib css
     'codemirror/lib/codemirror.css',
@@ -36,6 +37,7 @@ export default {
     { src: '@/plugins/vueuploadimgs.js', ssr: false },
     { src: '@/plugins/moment.js', ssr: false },
     { src: '@/plugins/codemirror.js', ssr: false },
+    { src: '@/plugins/vex-table' },
     { src: '@/plugins/contextmenu.js', ssr: false }
   ],
   loading: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4>修改文章</h4>
+    <h4>修改分类</h4>
     <detailform :data="form" :save="changeDetail" :loading="loading" :drafts="changeDrafts" />
   </div>
 </template>
@@ -14,12 +14,13 @@ export default {
     return {
       form: {
         content: '',
-        title: '',
+        name: '',
         category: [],
         description: '',
         seo_title: '',
         seo_keywords: '',
-        seo_description: ''
+        seo_description: '',
+        selectCategory: 0
       },
       loading: {
         formData: false,
@@ -44,7 +45,7 @@ export default {
     getDetail () {
       this.loading.formData = true
       const id = this.$route.params.id
-      const url = `/api/v1/${this.modal_name}/self/readone/` + id
+      const url = `/api/v1/category/${this.modal_name}/read/database/${id}`
       this.$axios
         .get(url)
         .then((res) => {
@@ -61,18 +62,19 @@ export default {
       const url = `/api/v1/${this.modal_name}/update`
       const body = {
         id: this.$route.params.id,
-        title: this.form.title,
+        name: this.form.title,
         content: this.form.content,
         description: this.form.description,
         seo_title: this.form.seo_title,
         seo_keywords: this.form.seo_keywords,
-        seo_description: this.form.seo_description
+        seo_description: this.form.seo_description,
+        category_id: this.form.selectCategory
       }
       this.$axios
         .put(url, body)
         .then((res) => {
           this.$toasted.success('成功修改文章')
-          this.$router.push('/dashboard/modal/detail/' + this.modal_name)
+          this.$router.push('/dashboard/modal/category/' + this.modal_name)
         })
         .finally(() => {
           this.loading.save = false

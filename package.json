@@ -27,8 +27,8 @@
     "vue-upload-imgs": "^1.0.3",
     "vuetify-toast-snackbar": "^0.6.1",
     "vuex-persistedstate": "^4.0.0-beta.1",
-    "vxe-table": "^3.0.14",
-    "xe-utils": "^3.0.4"
+    "vxe-table": "^2.9.25",
+    "xe-utils": "^2.7.20"
   },
   "devDependencies": {
     "@babel/runtime": "^7.12.5",

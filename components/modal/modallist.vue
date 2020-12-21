@@ -60,7 +60,6 @@ export default {
       required: true
     }
   },
-  middleware: 'authenticated',
   data () {
     return {
       headers: [{

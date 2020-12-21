@@ -39,7 +39,6 @@
 <script>
 export default {
   name: '',
-  middleware: 'authenticated',
   components: {},
   props: {
     form: {

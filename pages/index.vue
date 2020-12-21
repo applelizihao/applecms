@@ -1,32 +1,29 @@
 <template>
   <div>
-    <codeedit />
+    <vxe-table
+      border
+      highlight-hover-row
+      :data="tableData"
+    >
+      <vxe-table-column type="seq" title="Number" width="80" />
+      <vxe-table-column field="name" title="Name" sortable />
+      <vxe-table-column field="sex" title="Sex" sortable />
+      <vxe-table-column field="address" title="Address" />
+    </vxe-table>
   </div>
 </template>
+
 <script>
-import Codeedit from '../components/editor/codeedit.vue'
 export default {
-  name: '',
-  components: { Codeedit },
+  name: 'MyTable',
   data () {
-    return {}
-  },
-  computed: {},
-  watch: {},
-  beforeMount () {},
-  mounted () {
-    console.log(this.$toasted.info('hello billo'))
-  },
-  methods: {},
-  head () {
     return {
-      title: '首页',
-      meta: [
-        { hid: 'description', name: 'description', content: 'My custom description' }
+      tableData: [
+        { id: 10001, name: 'Test1', role: 'Developer', sex: 'Man', address: 'Address abc123' },
+        { id: 10002, name: 'Test2', role: 'Developer', sex: 'Female', address: 'Address rttry' },
+        { id: 10003, name: 'Test3', role: 'Developer', sex: 'Man', address: 'Address xxxxx' }
       ]
     }
   }
 }
 </script>
-<style lang='less' scoped>
-</style>

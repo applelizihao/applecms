@@ -11,7 +11,6 @@
 <script>
 export default {
   name: '',
-  middleware: 'authenticated',
   components: {},
   props: {
     content: {
@@ -59,10 +58,15 @@ export default {
   watch: {
     handbook () {
       this.$emit('update:content', this.handbook)
+    },
+    content: {
+      immediate: true,
+      handler () {
+        this.handbook = this.content
+      }
     }
   },
   created () {
-    this.handbook = this.content
   },
   mounted () {},
   methods: {}

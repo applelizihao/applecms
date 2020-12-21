@@ -1,18 +1,34 @@
 <template>
   <v-form ref="form" v-model="valid" lazy-validation class="row" no-gutters>
     <v-col cols="12" sm="8" md="8">
-      <p class="mb-1">
-        标题
-      </p>
-      <v-text-field
-        v-model="form.title"
-        label="输入标题信息"
-        :loading="loading.formData"
-        :counter="10"
-        solo
-        dense
-        required
-      />
+      <template v-if="form.name">
+        <p class="mb-1">
+          名称
+        </p>
+        <v-text-field
+          v-model="form.name"
+          label="分类名称"
+          :loading="loading.formData"
+          :counter="10"
+          solo
+          dense
+          required
+        />
+      </template>
+      <template v-if="form.title">
+        <p class="mb-1">
+          标题
+        </p>
+        <v-text-field
+          v-model="form.title"
+          label="输入标题信息"
+          :loading="loading.formData"
+          :counter="10"
+          solo
+          dense
+          required
+        />
+      </template>
       <div>
         <p class="mb-1">
           描述信息:
@@ -61,7 +77,6 @@ import Vueuploadimgs from './vueuploadimgs.vue'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   name: '',
-  middleware: 'authenticated',
   components: { Markdown, Seoform, Vueuploadimgs, Treeselect },
   props: {
     loading: {
@@ -97,28 +112,11 @@ export default {
       form: {
         content: '',
         title: '',
+        name: '',
         category: [],
         description: '',
         selectCategory: 0
-      },
-      // define options
-      options: [{
-        id: 'a',
-        label: 'a',
-        children: [{
-          id: 'aa',
-          label: 'aa'
-        }, {
-          id: 'ab',
-          label: 'ab'
-        }]
-      }, {
-        id: 'b',
-        label: 'b'
-      }, {
-        id: 'c',
-        label: 'c'
-      }]
+      }
     }
   },
   computed: {
@@ -130,9 +128,10 @@ export default {
   },
   created () {
     this.form = this.data
+  },
+  mounted () {
     this.getCategory()
   },
-  mounted () {},
   methods: {
     getCategory () {
       this.loading.getList = true
