@@ -59,10 +59,10 @@ export default {
     },
     changeDetail () {
       this.loading.save = true
-      const url = `/api/v1/${this.modal_name}/update`
+      const url = `/api/v1/category/${this.modal_name}/update`
       const body = {
         id: this.$route.params.id,
-        name: this.form.title,
+        name: this.form.name,
         content: this.form.content,
         description: this.form.description,
         seo_title: this.form.seo_title,

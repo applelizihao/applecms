@@ -43,7 +43,7 @@ export default {
     return {
       options: {
         // 缩进格式
-        mode: 'html',
+        mode: 'text/javascript',
         tabSize: 2,
         // 主题，对应主题库 JS 需要提前引入
         // theme: 'cobalt',

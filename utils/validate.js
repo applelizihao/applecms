@@ -20,7 +20,8 @@ localize({
       password: '密码',
       groupname: '组名',
       value: '值',
-      content: '内容'
+      content: '内容',
+      fieldType: '字段类型'
     }
   }
 })

@@ -29,6 +29,24 @@
               label="输入组名"
             />
           </ValidationProvider>
+          <p class="mb-1 black--text">
+            字段类型
+          </p>
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="fieldType"
+            rules="required"
+          >
+            <v-select
+              v-model="fieldType"
+              :items="filedItems"
+              name="fieldType"
+              label="请选择字段类型"
+              dense
+              outlined
+              :error-messages="errors"
+            />
+          </ValidationProvider>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -41,7 +59,7 @@
         </v-btn>
         <v-btn
           color="success darken-1"
-          :disabled="!valid||!content"
+          :disabled="!valid||!content||!fieldType"
           @click="save"
         >
           保存
@@ -58,6 +76,10 @@ export default {
   middleware: 'authenticated',
   components: {},
   props: {
+    childitem: {
+      type: Object,
+      default: null
+    },
     dialogfields: {
       type: Boolean,
       default: false
@@ -80,7 +102,18 @@ export default {
     return {
       dialog: false, /* 弹窗状态 */
       valid: false,
-      content: ''
+      content: '',
+      fieldType: 'text',
+      filedItems: [{
+        text: '文本框',
+        value: 'text'
+      }, {
+        text: '富文本框',
+        value: 'textarea'
+      }, {
+        text: '单图片',
+        value: 'image'
+      }]
     }
   },
   computed: {},
@@ -91,21 +124,14 @@ export default {
   mounted () {},
   methods: {
     save () {
-      let _index
-      let _id
-      if (this.listData.length > 0) {
-        _index = 0
-        _id = new Date().getTime()
-      } else {
-        _index = this.listData.length
-        _id = new Date().getTime()
-      }
-      this.changeListData({
-        id: _id,
-        index: _index,
-        name: this.content
+      console.log(this.fieldType)
+      this.childitem.children.push({
+        type: this.fieldType,
+        name: this.content,
+        index: this.childitem.children.length,
+        content: ''
       })
-      this.$emit('update:dialogfields', false)
+      // this.$emit('update:dialogfields', false)
     }
   }
 }

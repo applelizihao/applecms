@@ -2,9 +2,6 @@
   <div>
     <vxe-toolbar>
       <template v-slot:buttons>
-        <vxe-button @click="getTreeExpansionEvent">
-          获取已展开
-        </vxe-button>
         <vxe-button @click="$refs.xTree.setAllTreeExpand(true)">
           展开所有
         </vxe-button>
@@ -112,10 +109,6 @@ export default {
         .finally(() => {
           this.loading.delete = false
         })
-    },
-    getTreeExpansionEvent () {
-      const treeExpandRecords = this.$refs.xTree.getTreeExpandRecords()
-      this.$XModal.alert(treeExpandRecords.length)
     }
   }
 }

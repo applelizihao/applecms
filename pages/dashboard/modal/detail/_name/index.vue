@@ -100,7 +100,7 @@ export default {
       },
       {
         text: '所属分类',
-        value: 'category'
+        value: 'category_name'
       },
       {
         text: '描述',

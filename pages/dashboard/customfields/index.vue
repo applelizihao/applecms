@@ -19,50 +19,60 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <div class=" text-right">
-            <v-btn color="info" class="d-inline-block" @click="dialogfields = true">
+            <v-btn color="info" class="d-inline-block" @click="dialogfields = true;childitem = item">
               添加字段
             </v-btn>
           </div>
-          <div v-for="(child) in item.children" :key="child.index">
+          <div v-for="(child,idx) in item.children" :key="idx">
             <p class="mb-1">
               {{ child.name }}
+              <v-icon class="float-right pt-1" small color="error" @click="deleteItem(item.children,idx)">
+                mdi-delete
+              </v-icon>
             </p>
             <!-- 简单文本 type:text -->
             <template v-if="child.type == 'text'">
-              <v-text-field
-                solo
-                dense
-              />
+              <filedtext :item="child" />
             </template>
             <template v-if="child.type == 'textarea'">
-              <v-textarea
-                solo
-                dense
-              />
+              <filedtextarea :item="child" />
             </template>
             <template v-if="child.type == 'image'">
-              <vueuploadimgs />
+              <vueuploadimgs class="mb-5" />
             </template>
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
     <!--  eslint-disable-next-line vue/attribute-hyphenation -->
-    <addpanelfields :listData="listData" :changeListData="changeListData" :dialogfields.sync="dialogfields" />
+    <addpanelfields
+      :list-data="listData"
+      :change-list-data="changeListData"
+      :dialogfields.sync="dialogfields"
+      :childitem="childitem"
+    />
   </div>
 </template>
 <script>
 import Addpanel from '../../../components/customfields/addpanel.vue'
 import Addpanelfields from '../../../components/customfields/addpanelfields.vue'
+import filedtext from './filedtext'
+import filedtextarea from './filedtextarea'
 export default {
   name: '',
   middleware: 'authenticated',
-  components: { Addpanel, Addpanelfields },
+  components: {
+    Addpanel,
+    Addpanelfields,
+    filedtext,
+    filedtextarea
+  },
   data () {
     return {
       groupname: '',
       hasName: false,
       dialogfields: false,
+      childitem: null,
       listData: [
         {
           type: 'panel',
@@ -72,21 +82,26 @@ export default {
           children: [{
             type: 'text',
             name: 'xsa',
-            index: 0
+            index: 0,
+            content: ''
           },
           {
             type: 'text',
             name: 'xsa',
-            index: 1
+            index: 1,
+            content: ''
+
           }, {
             type: 'textarea',
             name: 'xsa',
+            content: '',
             index: 2
           },
           {
             type: 'image',
             name: 'xsa',
-            index: 3
+            index: 3,
+            content: ''
           }]
         },
         {
@@ -97,6 +112,7 @@ export default {
           children: [{
             type: 'text',
             name: 'xsa',
+            content: '',
             index: 0
           }]
         }
@@ -116,6 +132,10 @@ export default {
     // console.log(this.listData.find(item => item.name === '测试'))
   },
   methods: {
+    deleteItem (children, idx) {
+      children.splice(idx, 1)
+      console.log(children, idx)
+    },
     changeListData (obj) {
       console.log(obj)
       this.listData.push({

@@ -1,7 +1,6 @@
 <template>
   <div>
     <h4>创建分类</h4>
-    {{ form.selectCategory }}
     <detailform :data="form" :status="'createCategory'" :save="createArticle" :loading="loading" />
   </div>
 </template>
