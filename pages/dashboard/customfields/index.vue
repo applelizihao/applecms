@@ -73,50 +73,51 @@ export default {
       hasName: false,
       dialogfields: false,
       childitem: null,
-      listData: [
-        {
-          type: 'panel',
-          name: '测试',
-          index: 0,
-          id: new Date().getTime(),
-          children: [{
-            type: 'text',
-            name: 'xsa',
-            index: 0,
-            content: ''
-          },
-          {
-            type: 'text',
-            name: 'xsa',
-            index: 1,
-            content: ''
+      listData: []
+      // listData: [
+      //   {
+      //     type: 'panel',
+      //     name: '测试',
+      //     index: 0,
+      //     id: new Date().getTime(),
+      //     children: [{
+      //       type: 'text',
+      //       name: 'xsa',
+      //       index: 0,
+      //       content: ''
+      //     },
+      //     {
+      //       type: 'text',
+      //       name: 'xsa',
+      //       index: 1,
+      //       content: ''
 
-          }, {
-            type: 'textarea',
-            name: 'xsa',
-            content: '',
-            index: 2
-          },
-          {
-            type: 'image',
-            name: 'xsa',
-            index: 3,
-            content: ''
-          }]
-        },
-        {
-          type: 'panel',
-          name: '测试',
-          index: 1,
-          id: new Date().getTime(),
-          children: [{
-            type: 'text',
-            name: 'xsa',
-            content: '',
-            index: 0
-          }]
-        }
-      ]
+      //     }, {
+      //       type: 'textarea',
+      //       name: 'xsa',
+      //       content: '',
+      //       index: 2
+      //     },
+      //     {
+      //       type: 'image',
+      //       name: 'xsa',
+      //       index: 3,
+      //       content: ''
+      //     }]
+      //   },
+      //   {
+      //     type: 'panel',
+      //     name: '测试',
+      //     index: 1,
+      //     id: new Date().getTime(),
+      //     children: [{
+      //       type: 'text',
+      //       name: 'xsa',
+      //       content: '',
+      //       index: 0
+      //     }]
+      //   }
+      // ]
     }
   },
   computed: {},
@@ -128,10 +129,21 @@ export default {
   },
   created () {},
   mounted () {
-    // console.log(this.$refs)
-    // console.log(this.listData.find(item => item.name === '测试'))
+    this.getListData()
   },
   methods: {
+    getListData () {
+      const name = 'customfields'
+      const url = '/api/v1/customfields/read/' + name
+      this.$axios
+        .get(url)
+        .then((res) => {
+          this.listData = res.data
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data)
+        })
+    },
     deleteItem (children, idx) {
       children.splice(idx, 1)
       console.log(children, idx)

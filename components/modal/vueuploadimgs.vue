@@ -1,6 +1,7 @@
 <template>
   <VueUploadImgs
     v-if="show"
+    ref="images"
     v-model="files"
     class="VueUploadImgs"
     multiple
@@ -23,17 +24,16 @@ export default {
     return {
       show: false,
       files: [
-        {
-          url: 'https://pic3.zhimg.com/v2-058f646c41b55206f8110489d82fa103_is.jpg',
-          name: 'user.jpg'
-        }
+        // {
+        //   url: '',
+        //   name: 'user.jpg'
+        // }
       ],
-      maxSize: 1024 * 2000, // 2000 KB
+      maxSize: 1024 * 5000, // 5000 KB
       previewIMG: null,
       limit: 1,
       isPreview: false,
       type: 0 // 0 预览模式 1 列表模式 2 预览模式 + 上传按钮
-
     }
   },
   computed: {},
@@ -50,7 +50,12 @@ export default {
 
     afterRead (file) {
       console.log('after-read')
-      console.log(file)
+      const formdata = new FormData()
+      formdata.append('name', file[0].name)
+      formdata.append('file', this.dataURItoBlob(file[0].url))
+      this.postUpoload(formdata)
+      // console.log(window.URL.createObjectURL(file[0]).url)
+      // console.log(file)
     },
 
     beforeRemove (index, file) {
@@ -82,7 +87,30 @@ export default {
 
     closePreview () {
       this.isPreview = false
+    },
+
+    postUpoload (formData) {
+      const url = '/api/v1/photo/upload'
+      this.$axios
+        .post(url, formData)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data)
+        })
+    },
+    dataURItoBlob (base64Data) {
+      let byteString
+      if (base64Data.split(',')[0].includes('base64')) { byteString = atob(base64Data.split(',')[1]) } else { byteString = unescape(base64Data.split(',')[1]) }
+      const mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0]
+      const ia = new Uint8Array(byteString.length)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+      }
+      return new Blob([ia], { type: mimeString })
     }
+
   }
 
 }

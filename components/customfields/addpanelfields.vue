@@ -124,7 +124,6 @@ export default {
   mounted () {},
   methods: {
     save () {
-      console.log(this.fieldType)
       this.childitem.children.push({
         type: this.fieldType,
         name: this.content,

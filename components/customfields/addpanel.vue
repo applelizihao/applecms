@@ -13,6 +13,14 @@
       >
         新增一组
       </v-btn>
+      <v-btn
+        color="info"
+        dark
+        class="ml-3"
+        @click="saveCustomfields"
+      >
+        保存
+      </v-btn>
     </template>
     <v-card>
       <v-card-title>
@@ -96,6 +104,20 @@ export default {
   },
   mounted () {},
   methods: {
+    saveCustomfields () {
+      const body = {
+        name: 'customfields',
+        json_str: JSON.stringify(this.listData)
+      }
+      this.$axios
+        .post('/api/v1/customfields/write', body)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     save () {
       let _index
       let _id
