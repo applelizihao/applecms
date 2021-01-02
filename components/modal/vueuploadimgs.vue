@@ -54,8 +54,6 @@ export default {
       formdata.append('name', file[0].name)
       formdata.append('file', this.dataURItoBlob(file[0].url))
       this.postUpoload(formdata)
-      // console.log(window.URL.createObjectURL(file[0]).url)
-      // console.log(file)
     },
 
     beforeRemove (index, file) {
@@ -97,7 +95,7 @@ export default {
           console.log(res)
         })
         .catch((error) => {
-          this.$toasted.error(error.response.data)
+          this.$toasted.error(error.response.data.detail)
         })
     },
     dataURItoBlob (base64Data) {

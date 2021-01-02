@@ -17,6 +17,7 @@
         color="info"
         dark
         class="ml-3"
+        :loading="loading.customfields"
         @click="saveCustomfields"
       >
         保存
@@ -94,7 +95,10 @@ export default {
     return {
       dialog: false, /* 弹窗状态 */
       valid: false,
-      content: ''
+      content: '',
+      loading: {
+        customfields: false
+      }
     }
   },
   computed: {},
@@ -105,6 +109,7 @@ export default {
   mounted () {},
   methods: {
     saveCustomfields () {
+      this.loading.customfields = true
       const body = {
         name: 'customfields',
         json_str: JSON.stringify(this.listData)
@@ -112,10 +117,13 @@ export default {
       this.$axios
         .post('/api/v1/customfields/write', body)
         .then((res) => {
-          console.log(res)
+          this.$toasted.success('保存成功')
         })
         .catch((error) => {
-          console.log(error)
+          this.$toasted.error(error.data)
+        })
+        .finally(() => {
+          this.loading.customfields = false
         })
     },
     save () {
@@ -139,7 +147,6 @@ export default {
         this.dialog = false
       } catch (error) {
         this.$toasted.error('添加失败')
-        console.log(error)
       }
     }
   }

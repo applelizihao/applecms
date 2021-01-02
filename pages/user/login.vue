@@ -62,6 +62,7 @@
 </template>
 <script>
 import '@/utils/validate'
+// import { loginUser } from "@/api/user.js";
 export default {
   name: 'Login',
   components: {},
@@ -83,25 +84,26 @@ export default {
   },
   methods: {
     loginUser () {
-      this.loading.reg = true
-      const url = '/api/v1/auth/login'
-      const body = {
-        username: this.username,
-        password: this.password
-      }
-      this.$axios
-        .post(url, body)
-        .then((res) => {
-          this.$store.commit('SET_TOKEN', res.data.token)
-          this.$router.push('/dashboard')
-          this.$toasted.success('登录成功')
-        })
-        .catch((error) => {
-          this.$toasted.error(error.response.data)
-        })
-        .finally(() => {
-          this.loading.reg = false
-        })
+      // console.log(loginUser);
+      // this.loading.reg = true
+      // const url = '/api/v1/auth/login'
+      // const body = {
+      //   username: this.username,
+      //   password: this.password
+      // }
+      // this.$axios
+      //   .post(url, body)
+      //   .then((res) => {
+      //     this.$store.commit('SET_TOKEN', res.data.token)
+      //     this.$router.push('/dashboard')
+      //     this.$toasted.success('登录成功')
+      //   })
+      //   .catch((error) => {
+      //     this.$toasted.error(error.response.data)
+      //   })
+      //   .finally(() => {
+      //     this.loading.reg = false
+      //   })
     }
   },
   head () {

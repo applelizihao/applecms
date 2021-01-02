@@ -7,6 +7,10 @@
     >
       <v-icon>mdi-silverware</v-icon>
       <v-toolbar-title>源码在线编辑</v-toolbar-title>
+      <v-spacer />
+      <v-btn class="success" @click="getTemplates">
+        源码下载
+      </v-btn>
     </v-toolbar>
     <v-row>
       <v-col>
@@ -195,6 +199,30 @@ export default {
     closedelete (item) {
       this.deleteoption.show = false
     },
+    getTemplates () {
+      const url = '/api/v1/editor/packup/templates'
+      this.$axios
+        .get(url)
+        .then((res) => {
+          this.getTemplatesLink()
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data)
+        })
+    },
+    getTemplatesLink () {
+      const url = '/api/v1/editor/templates/link'
+      this.$axios
+        .get(url)
+        .then((res) => {
+          console.log(res)
+          window.open('http://www.' + res.data)
+        })
+        .catch((error) => {
+          this.$toasted.error(error.response.data)
+        })
+    },
+
     deletefile (item, type) {
       this.deleteoption.loading = true
       const url = type === 'file' ? '/api/v1/editor/delete' : '/api/v1/editor/delete/directory'
