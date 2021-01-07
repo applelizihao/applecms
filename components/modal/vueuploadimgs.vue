@@ -92,7 +92,7 @@ export default {
       this.$axios
         .post(url, formData)
         .then((res) => {
-          console.log(res)
+          this.$emit('setPhoto', res.data)
         })
         .catch((error) => {
           this.$toasted.error(error.response.data.detail)

@@ -20,7 +20,8 @@ export default {
         seo_title: '',
         seo_keywords: '',
         seo_description: '',
-        selectCategory: 0
+        selectCategory: 0,
+        image: ''
       },
       loading: {
         formData: false,
@@ -68,7 +69,8 @@ export default {
         seo_title: this.form.seo_title,
         seo_keywords: this.form.seo_keywords,
         seo_description: this.form.seo_description,
-        category_id: this.form.selectCategory
+        category_id: this.form.selectCategory,
+        image: this.form.image
       }
       this.$axios
         .put(url, body)

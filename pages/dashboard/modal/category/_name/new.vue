@@ -20,7 +20,8 @@ export default {
         seo_title: '312312',
         seo_keywords: '312312',
         seo_description: 'dsadasdas',
-        selectCategory: 0
+        selectCategory: 0,
+        image: ''
       },
       loading: {
         save: false,
@@ -53,7 +54,8 @@ export default {
           status: true,
           seo_title: this.form.seo_title,
           seo_keywords: this.form.seo_keywords,
-          seo_description: this.form.seo_description
+          seo_description: this.form.seo_description,
+          image: this.form.image
         }
       }
       this.$axios

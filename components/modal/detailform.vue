@@ -47,7 +47,7 @@
         <p class="mb-0">
           图片上传
         </p>
-        <vueuploadimgs />
+        <vueuploadimgs @setPhoto="setPhoto" />
       </div>
       <div>
         <p
@@ -120,7 +120,8 @@ export default {
         name: '',
         category: [],
         description: '',
-        selectCategory: 0
+        selectCategory: 0,
+        image: ''
       }
     }
   },
@@ -138,6 +139,14 @@ export default {
     this.getCategory()
   },
   methods: {
+    setPhoto (data) {
+      if (data.filename) {
+        this.form.image = data.filename
+        this.$toasted.success('上传成功')
+      } else {
+        this.$toasted.error('上传失败:' + data.status)
+      }
+    },
     getCategory () {
       this.loading.getList = true
       const url = '/api/v1/category/articles/read/json'

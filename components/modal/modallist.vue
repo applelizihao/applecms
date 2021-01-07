@@ -31,7 +31,8 @@
         </v-btn>
       </template>
       <!-- eslint-disable-next-line -->
-      <template v-slot:item.version="{ item }">
+       <!-- v-slot:item.version="{ item }" -->
+      <template>
         <div class="version py-2">
           <v-select
             class="m-0"

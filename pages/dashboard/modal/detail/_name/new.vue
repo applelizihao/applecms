@@ -20,7 +20,8 @@ export default {
         seo_title: '312312',
         seo_keywords: '312312',
         seo_description: 'dsadasdas',
-        selectCategory: 0
+        selectCategory: 0,
+        image: ''
       },
       loading: {
         save: false,
@@ -51,7 +52,8 @@ export default {
         seo_description: this.form.seo_description,
         status: 2,
         is_release: false,
-        can_search: true
+        can_search: true,
+        image: this.form.image
       }
       this.$axios
         .post(url, body)

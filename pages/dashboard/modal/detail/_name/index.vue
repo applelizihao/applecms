@@ -34,6 +34,11 @@
             mdi-delete
           </v-icon>
         </template>
+        <template v-slot:item.image="{ item }">
+          <template v-if="item.image">
+            <img class="mt-1" height="40" :src="photoDomainUrl(item.image)" alt="">
+          </template>
+        </template>
         <!-- eslint-disable-next-line -->
         <template v-slot:item.create_date="{ item }">
           {{ item.create_date | utcTime(item.create_date) }}
@@ -81,8 +86,8 @@
   </div>
 </template>
 <script>
+const config = require('@/config/index.js')
 export default {
-  name: '',
   middleware: 'authenticated',
   components: {},
   data () {
@@ -170,6 +175,9 @@ export default {
   },
   mounted () {},
   methods: {
+    photoDomainUrl (url) {
+      return config.photo_domain + url
+    },
     editItem (item) {
       this.$router.push(this.$route.params.name + '/edit/' + item.id)
     },
